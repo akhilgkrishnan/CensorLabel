@@ -4,13 +4,18 @@ import cv2 as cv
 import subprocess
 import time
 import os
+from PIL import Image 
 
 def show_image(img):
     cv.imshow("Image", img)
     cv.waitKey(0)
+def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
+    return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
 
-def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels):
+def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co):
     # If there are any detections
+    print(co)
+    
     if len(idxs) > 0:
         for i in idxs.flatten():
             # Get the bounding box coordinates
@@ -21,12 +26,39 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             color = [int(c) for c in colors[classids[i]]]
 
             # Draw the bounding box rectangle and label on the image
-            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            #cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            #text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            #cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            
+            #Adding "smoking injurious to health" label to each smoking detected frame
+            if(classes[0]==0): #Check the detected item is smoking
+                logo = Image.open('logo.png')
+                pil_img = cv2_to_pil(img)
+                logo = logo.convert("RGBA")
+                logo = logo.resize((250,40))
+                image_copy = pil_img.copy()
+            
+                position = (10,height-65)
+                image_copy.paste(logo, position,logo)
+                image_copy.save("pasted_image.jpg")
+                img1 = cv.imread("pasted_image.jpg")
+            # elif(classes[0]==2): #Check the detected class is person without waering helmet
+            #     logo = Image.open('logo.png')
+            #     pil_img = cv2_to_pil(img)
+            #     logo = logo.convert("RGBA")
+            #     logo = logo.resize((250,40))
+            #     image_copy = pil_img.copy()
+            
+            #     position = (10,height-65)
+            #     image_copy.paste(logo, position,logo)
+            #     image_copy.save("pasted_image.jpg")
+            #     img1 = cv.imread("pasted_image.jpg")    
+            else:
+                img1 = img
+        return img1   
 
-    return img
-
+    else:       
+        return img
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
@@ -61,13 +93,14 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     return boxes, confidences, classids
 
-def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS, 
+def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,co, 
             boxes=None, confidences=None, classids=None, idxs=None, infer=True):
     
     if infer:
         # Contructing a blob from the input image
         blob = cv.dnn.blobFromImage(img, 1 / 255.0, (416, 416), 
                         swapRB=True, crop=False)
+                       
 
         # Perform a forward pass of the YOLO object detector
         net.setInput(blob)
@@ -91,6 +124,6 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels)
+    img = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co)
 
     return img, boxes, confidences, classids, idxs

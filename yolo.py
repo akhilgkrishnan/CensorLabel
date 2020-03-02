@@ -1,10 +1,10 @@
 import numpy as np
 import argparse
 import cv2 as cv
-import subprocess
 import time
 import os
 from yolo_utils import infer_image, show_image
+from PIL import Image  
 
 FLAGS = []
 
@@ -19,18 +19,16 @@ if __name__ == '__main__':
 
 	parser.add_argument('-w', '--weights',
 		type=str,
-		default='./yolov3-coco/yolov3.weights',
+		default='./yolov3-coco/yolov3-custom_final.weights',
 		help='Path to the file which contains the weights \
 			 	for YOLOv3.')
 
 	parser.add_argument('-cfg', '--config',
 		type=str,
-		default='./yolov3-coco/yolov3.cfg',
+		default='./yolov3-coco/yolov3-custom.cfg',
 		help='Path to the configuration file for the YOLOv3 model.')
 
-	parser.add_argument('-i', '--image-path',
-		type=str,
-		help='The path to the image file')
+
 
 	parser.add_argument('-v', '--video-path',
 		type=str,
@@ -74,9 +72,6 @@ if __name__ == '__main__':
 
 	FLAGS, unparsed = parser.parse_known_args()
 
-	# Download the YOLOv3 models if needed
-	if FLAGS.download_model:
-		subprocess.call(['./yolov3-coco/get_model.sh'])
 
 	# Get the labels
 	labels = open(FLAGS.labels).read().strip().split('\n')
@@ -84,33 +79,16 @@ if __name__ == '__main__':
 	# Intializing colors to represent each label uniquely
 	colors = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
 
-	# Load the weights and configutation to form the pretrained YOLOv3 model
+	# Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
 	net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
 
 	# Get the output layer names of the model
 	layer_names = net.getLayerNames()
 	layer_names = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-        
-	# If both image and video files are given then raise error
-	if FLAGS.image_path is None and FLAGS.video_path is None:
-	    print ('Neither path to an image or path to video provided')
-	    print ('Starting Inference on Webcam')
 
-	# Do inference with given image
-	if FLAGS.image_path:
-		# Read the image
-		try:
-			img = cv.imread(FLAGS.image_path)
-			height, width = img.shape[:2]
-		except:
-			raise 'Image cannot be loaded!\n\
-                               Please check the path provided!'
+	
 
-		finally:
-			img, _, _, _, _ = infer_image(net, layer_names, height, width, img, colors, labels, FLAGS)
-			show_image(img)
-
-	elif FLAGS.video_path:
+	if FLAGS.video_path:
 		# Read the video
 		try:
 			vid = cv.VideoCapture(FLAGS.video_path)
@@ -121,8 +99,13 @@ if __name__ == '__main__':
                                Please check the path provided!'
 
 		finally:
+			co =0
 			while True:
+    		
 				grabbed, frame = vid.read()
+				co += 1
+				
+				
 
 			    # Checking if the complete video is read
 				if not grabbed:
@@ -130,8 +113,8 @@ if __name__ == '__main__':
 
 				if width is None or height is None:
 					height, width = frame.shape[:2]
-
-				frame, _, _, _, _ = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS)
+				
+				frame, _, _, _, _ = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, co)
 
 				if writer is None:
 					# Initialize the video writer
@@ -148,26 +131,4 @@ if __name__ == '__main__':
 
 
 	else:
-		# Infer real-time on webcam
-		count = 0
-
-		vid = cv.VideoCapture(0)
-		while True:
-			_, frame = vid.read()
-			height, width = frame.shape[:2]
-
-			if count == 0:
-				frame, boxes, confidences, classids, idxs = infer_image(net, layer_names, \
-		    						height, width, frame, colors, labels, FLAGS)
-				count += 1
-			else:
-				frame, boxes, confidences, classids, idxs = infer_image(net, layer_names, \
-		    						height, width, frame, colors, labels, FLAGS, boxes, confidences, classids, idxs, infer=False)
-				count = (count + 1) % 6
-
-			cv.imshow('webcam', frame)
-
-			if cv.waitKey(1) & 0xFF == ord('q'):
-				break
-		vid.release()
-		cv.destroyAllWindows()
+		print("Please enter the video path")
