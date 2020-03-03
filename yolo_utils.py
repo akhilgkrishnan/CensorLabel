@@ -14,7 +14,7 @@ def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
 
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co):
     # If there are any detections
-    print(co)
+    
     
     if len(idxs) > 0:
         for i in idxs.flatten():
