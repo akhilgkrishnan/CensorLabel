@@ -6,12 +6,21 @@ import time
 import os
 from PIL import Image 
 
-def show_image(img):
-    cv.imshow("Image", img)
-    cv.waitKey(0)
+
 def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
     return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
-
+def add_smoke(img,height):
+    logo = Image.open('logo.png')
+    pil_img = cv2_to_pil(img)
+    logo = logo.convert("RGBA")
+    logo = logo.resize((250,40))
+    image_copy = pil_img.copy()
+            
+    position = (10,height-65)
+    image_copy.paste(logo, position,logo)
+    image_copy.save("pasted_image.jpg")
+    
+    
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co):
     # If there are any detections
     detect = 0
@@ -32,31 +41,12 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             
             #Adding "smoking injurious to health" label to each smoking detected frame
             if(classids[0]==0): #Check the detected item is smoking
-                logo = Image.open('logo.png')
-                pil_img = cv2_to_pil(img)
-                logo = logo.convert("RGBA")
-                logo = logo.resize((250,40))
-                image_copy = pil_img.copy()
-            
-                position = (10,height-65)
-                image_copy.paste(logo, position,logo)
-                image_copy.save("pasted_image.jpg")
-                img1 = cv.imread("pasted_image.jpg")
-                detect = 1
-            # elif(classes[0]==2): #Check the detected class is person without waering helmet
-            #     logo = Image.open('logo.png')
-            #     pil_img = cv2_to_pil(img)
-            #     logo = logo.convert("RGBA")
-            #     logo = logo.resize((250,40))
-            #     image_copy = pil_img.copy()
-            
-            #     position = (10,height-65)
-            #     image_copy.paste(logo, position,logo)
-            #     image_copy.save("pasted_image.jpg")
-            #     img1 = cv.imread("pasted_image.jpg")    
+                add_smoke(img,height)
+                labelledImg = cv.imread("pasted_image.jpg")
+                detect = 1 
             else:
-                img1 = img
-        return img1,detect   
+                labelledImg = img
+        return labelledImg,detect   
 
     else:       
         return img,detect
@@ -126,5 +116,5 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,co,
         
     # Draw labels and boxes on the image
     img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co)
-    print("Detection ",detect)
-    return img, boxes, confidences, classids, idxs
+    
+    return img, detect
