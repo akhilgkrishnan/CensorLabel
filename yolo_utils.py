@@ -15,7 +15,6 @@ def add_smoke(img,height):
     logo = logo.convert("RGBA")
     logo = logo.resize((250,40))
     image_copy = pil_img.copy()
-            
     position = (10,height-65)
     image_copy.paste(logo, position,logo)
     image_copy.save("pasted_image.jpg")
