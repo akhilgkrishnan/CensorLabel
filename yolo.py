@@ -4,7 +4,7 @@ import argparse
 import cv2 as cv
 import time
 import os
-from yolo_utils import infer_image, show_image
+from yolo_utils import infer_image
 from PIL import Image  
 
 FLAGS = []
@@ -106,16 +106,15 @@ if __name__ == '__main__':
 				grabbed, frame = vid.read()
 				co += 1
 				
-				
-
-			    # Checking if the complete video is read
+				# Checking if the complete video is read
 				if not grabbed:
 					break
 
 				if width is None or height is None:
 					height, width = frame.shape[:2]
 				
-				frame, _, _, _, _ = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, co)
+				frame,detect= infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, co)
+				print("Detection ",detect)
 				
 
 				if writer is None:
