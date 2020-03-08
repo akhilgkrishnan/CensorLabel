@@ -14,7 +14,7 @@ def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
 
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co):
     # If there are any detections
-    
+    detect = 0
     
     if len(idxs) > 0:
         for i in idxs.flatten():
@@ -31,7 +31,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             #cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
             #Adding "smoking injurious to health" label to each smoking detected frame
-            if(classes[0]==0): #Check the detected item is smoking
+            if(classids[0]==0): #Check the detected item is smoking
                 logo = Image.open('logo.png')
                 pil_img = cv2_to_pil(img)
                 logo = logo.convert("RGBA")
@@ -42,6 +42,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                 image_copy.paste(logo, position,logo)
                 image_copy.save("pasted_image.jpg")
                 img1 = cv.imread("pasted_image.jpg")
+                detect = 1
             # elif(classes[0]==2): #Check the detected class is person without waering helmet
             #     logo = Image.open('logo.png')
             #     pil_img = cv2_to_pil(img)
@@ -55,10 +56,10 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             #     img1 = cv.imread("pasted_image.jpg")    
             else:
                 img1 = img
-        return img1   
+        return img1,detect   
 
     else:       
-        return img
+        return img,detect
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
@@ -124,6 +125,6 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,co,
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co)
-
+    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co)
+    print("Detection ",detect)
     return img, boxes, confidences, classids, idxs
