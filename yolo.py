@@ -1,3 +1,4 @@
+#YOLOV3 Detection
 import numpy as np
 import argparse
 import cv2 as cv
@@ -115,6 +116,7 @@ if __name__ == '__main__':
 					height, width = frame.shape[:2]
 				
 				frame, _, _, _, _ = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, co)
+				
 
 				if writer is None:
 					# Initialize the video writer
