@@ -98,7 +98,8 @@ if __name__ == '__main__':
             while True:
 
                 grabbed, frame = vid.read()
-                co += 1
+                
+                print("Frame count",co)
 
                 # Checking if the complete video is read
                 if not grabbed:
@@ -107,7 +108,9 @@ if __name__ == '__main__':
 				
                 if width is None or height is None:
                     height, width = frame.shape[:2]
-                if(co%24==0):
+                #Take first frame from each second for detection    
+                if(co%1==0):
+                    
                     frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, co)
                     if writer is None:
                         # Initialize the video writer
@@ -115,10 +118,12 @@ if __name__ == '__main__':
                         writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, 30,
                                                 (frame.shape[1], frame.shape[0]), True)
                     writer.write(frame)
+                    #Check the frame contain any detection, if detection is occur, label statutory warning on the next 120 frames
                     if detect:
-                        for i in range(1,48):
+                        for i in range(1,120):
                             grabbed,frame = vid.read()
                             co += 1
+                            print("Frame count",co)
                             height, width = frame.shape[:2]
                             add_smoke(frame,height)
                             labelledImg = cv.imread("pasted_image.jpg")
@@ -136,6 +141,7 @@ if __name__ == '__main__':
                         writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, 30,
                                                 (frame.shape[1], frame.shape[0]), True)
                     writer.write(frame)
+                co += 1    
 
             print("[INFO] Cleaning up...")
             writer.release()
