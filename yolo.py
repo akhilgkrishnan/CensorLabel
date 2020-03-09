@@ -148,4 +148,4 @@ if __name__ == '__main__':
             vid.release()
 
     else:
-        print("Please enter the video path")
+        print("Please enter the video path..")
