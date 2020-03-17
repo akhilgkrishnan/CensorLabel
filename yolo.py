@@ -79,10 +79,14 @@ if __name__ == '__main__':
 
     # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
     net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
+    print("sucess")
+   
 
     # Get the output layer names of the model
     layer_names = net.getLayerNames()
+    
     layer_names = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+    print(layer_names)
 
     if FLAGS.video_path:
         #Extracting the audio file from the video file

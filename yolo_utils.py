@@ -88,8 +88,7 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
     
     if infer:
         # Contructing a blob from the input image
-        blob = cv.dnn.blobFromImage(img, 1 / 255.0, (416, 416), 
-                        swapRB=True, crop=False)
+        blob = cv.dnn.blobFromImage(img, 1 / 255.0, (416, 416), swapRB=True, crop=False)
                        
 
         # Perform a forward pass of the YOLO object detector
