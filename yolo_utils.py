@@ -9,8 +9,13 @@ from PIL import Image
 
 def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
     return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
+<<<<<<< HEAD
+def add_label(img,height,dtype):
+    logo = Image.open(dtype)
+=======
 def add_smoke(img,height):
     logo = Image.open('logo.png')
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     pil_img = cv2_to_pil(img)
     logo = logo.convert("RGBA")
     logo = logo.resize((250,40))
@@ -18,9 +23,16 @@ def add_smoke(img,height):
     position = (10,height-65)
     image_copy.paste(logo, position,logo)
     image_copy.save("pasted_image.jpg")
+<<<<<<< HEAD
+ 
+    
+    
+def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount):
+=======
     
     
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co):
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     # If there are any detections
     detect = 0
     
@@ -39,11 +51,23 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             #cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
             #Adding "smoking injurious to health" label to each smoking detected frame
+<<<<<<< HEAD
+            if 2 in classids: #Check the detected item is smoking
+                add_label(img,height,'smoke.png')
+                labelledImg = cv.imread("pasted_image.jpg")
+                detect = 1
+            elif 1 in classids:
+                add_label(img,height,'helmet.png')
+                labelledImg = cv.imread("pasted_image.jpg")
+                detect =2
+            else:    
+=======
             if(classids[0]==0): #Check the detected item is smoking
                 add_smoke(img,height)
                 labelledImg = cv.imread("pasted_image.jpg")
                 detect = 1 
             else:
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
                 labelledImg = img
         return labelledImg,detect   
 
@@ -83,7 +107,11 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     return boxes, confidences, classids
 
+<<<<<<< HEAD
+def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,frameCount, 
+=======
 def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,co, 
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
             boxes=None, confidences=None, classids=None, idxs=None, infer=True):
     
     if infer:
@@ -114,6 +142,10 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,co,
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
+<<<<<<< HEAD
+    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount)
+=======
     img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,co)
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     
     return img, detect
