@@ -48,13 +48,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             elif 1 in classids:
                 labelledImg = cv.imread("pasted_image.jpg")
                 detect =2
-            else:    
-
-            if(classids[0]==0): #Check the detected item is smoking
-                add_smoke(img,height)
-                labelledImg = cv.imread("pasted_image.jpg")
-                detect = 1 
             else:
+                labelledImg = img
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
     confidences = []

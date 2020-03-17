@@ -3,20 +3,19 @@ import argparse
 import cv2 as cv
 import time
 import os
-from yolo_utils import infer_image, add_smoke
+from yolo_utils import infer_image, add_label
 from PIL import Image
 
 FLAGS = []
 
 if __name__ == '__main__':
+    
+    
     parser = argparse.ArgumentParser()
-
-
     parser.add_argument('-w', '--weights',
                         type=str,
                         default='./yolov3-coco/yolov3hs.weights',
-                        help='Path to the file which contains the weights \
-			 	for YOLOv3.')
+                        help='Path to the file which contains the weights for YOLOv3.')
 
     parser.add_argument('-cfg', '--config',
                         type=str,
@@ -35,8 +34,7 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--labels',
                         type=str,
                         default='./yolov3-coco/coco-labels',
-                        help='Path to the file having the \
-					labels in a new-line seperated way.')
+                        help='Path to the file having the labels in a new-line seperated way.')
 
     parser.add_argument('-c', '--confidence',
                         type=float,
@@ -48,8 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('-th', '--threshold',
                         type=float,
                         default=0.3,
-                        help='The threshold to use when applying the \
-				Non-Max Suppresion')
+                        help='The threshold to use when applying the Non-Max Suppresion')
 
     parser.add_argument('-t', '--show-time',
                         type=bool,
@@ -58,111 +55,106 @@ if __name__ == '__main__':
     parser.add_argument("-u", "--use_gpu", 
                         type=bool, 
                         default=False,
-	                    help="boolean indicating if CUDA GPU should be used")                    
+	                    help="boolean indicating if CUDA GPU should be used.")                    
 
     FLAGS, unparsed = parser.parse_known_args()
-
+    
+    
     if FLAGS.use_gpu:
     	# set CUDA as the preferable backend and target
 	    print("[INFO] setting preferable backend and target to CUDA...")
 	    net.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
 	    net.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
 
-    #Extracting the audio file from the video file
-    os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn audio.wav')
+    
 
     # Get the labels
     labels = open(FLAGS.labels).read().strip().split('\n')
 
+    
+
     # Intializing colors to represent each label uniquely
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
+
 
     # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
     net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
 
     # Get the output layer names of the model
     layer_names = net.getLayerNames()
-    layer_names = [layer_names[i[0] - 1]
-                   for i in net.getUnconnectedOutLayers()]
+    layer_names = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
     if FLAGS.video_path:
-        # Read the video
-        try:
-            vid = cv.VideoCapture(FLAGS.video_path)
-            fps = vid.get(cv.CAP_PROP_FPS)
-            print("FPS is :",fps)
-            height , width = None, None
-            writer = None
-            frameCount = 0
+        #Extracting the audio file from the video file
+        os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn audio.wav')
+        
+        vid = cv.VideoCapture(FLAGS.video_path)
+        fps = vid.get(cv.CAP_PROP_FPS)
+        print("FPS is :",fps)
+        height , width =  None, None
+        writer = None
+        frameCount = 0
+        
+        while True:
+            grabbed, frame = vid.read()
+            print("Frame count",frameCount)
 
-            while True:
+            # Checking if the complete video is read
+            if not grabbed:
+                break
 
-                grabbed, frame = vid.read()
-                
-                print("Frame count",frameCount)
+            if width is None or height is None:
+                height , width = frame.shape[:2]
+            #Take first frame from each second for detection  
 
-                # Checking if the complete video is read
-                if not grabbed:
-                    break
-                
-				
-                if width is None or height is None:
-                    height, width = frame.shape[:2]
-                #Take first frame from each second for detection    
-                if(frameCount%fps==0):
-                    
-                    frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, frameCount)
-                    if writer is None:
-                        # Initialize the video writer
-                        fourcc = cv.VideoWriter_fourcc(*"MJPG")
-                        writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,
-                                                (frame.shape[1], frame.shape[0]), True)
-                    writer.write(frame)
+            if(frameCount%fps==0):
+                frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, frameCount)
+            if writer is None:
+                # Initialize the video writer
+                fourcc = cv.VideoWriter_fourcc(*"MJPG")
+                writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,(frame.shape[1], frame.shape[0]), True)
+                writer.write(frame)
                     #Check the frame contain any detection, if detection is occur, label statutory warning on the next 120 frames
-                    if(detect==1):
-                        for i in range(1,120):
-                            grabbed,frame = vid.read()
-                            frameCount += 1
-                            print("Frame count",frameCount)
-                            height, width = frame.shape[:2]
-                            add_label(frame,height,'smoke.png')
-                            labelledImg = cv.imread("pasted_image.jpg")
-                            if writer is None:
-                                # Initialize the video writer
-                                fourcc = cv.VideoWriter_fourcc(*"MJPG")
-                                writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,
-                                                (frame.shape[1], frame.shape[0]), True)
-                            writer.write(labelledImg)
-                    elif(detect==2):
-                        for i in range(1,120):
-                            grabbed,frame = vid.read()
-                            frameCount += 1
-                            print("Frame count",frameCount)
-                            height, width = frame.shape[:2]
-                            add_label(frame,height,'helmet.png')
-                            labelledImg = cv.imread("pasted_image.jpg")
-                            if writer is None:
-                                # Initialize the video writer
-                                fourcc = cv.VideoWriter_fourcc(*"MJPG")
-                                writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,
-                                                (frame.shape[1], frame.shape[0]), True)
-                            writer.write(labelledImg)        
-                else:            
+            if(detect==1):
+                for i in range(1,120):
+                    grabbed,frame = vid.read()
+                    frameCount += 1
+                    print("Frame count",frameCount)
+                    height, width = frame.shape[:2]
+                    add_label(frame,height,'smoke.png')
+                    labelledImg = cv.imread("pasted_image.jpg")
+                    if writer is None:
 
+                        # Initialize the video writer
+                        fourcc = cv.VideoWriter_fourcc(*"MJPG")
+                        writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,(frame.shape[1], frame.shape[0]), True)
+                    writer.write(labelledImg)
+            elif(detect==2):
+                for i in range(1,120):
+                    grabbed,frame = vid.read()
+                    frameCount += 1
+                    print("Frame count",frameCount)
+                    height, width = frame.shape[:2]
+                    add_label(frame,height,'helmet.png')
+                    labelledImg = cv.imread("pasted_image.jpg")
                     if writer is None:
                         # Initialize the video writer
                         fourcc = cv.VideoWriter_fourcc(*"MJPG")
                         writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,
-                                                (frame.shape[1], frame.shape[0]), True)
-                    writer.write(frame)
-                frameCount += 1    
-
-            print("[INFO] Cleaning up...")
-            writer.release()
-            vid.release()
-
-            #Binding the audio file to the output.avi file
-            os.system('ffmpeg -i output.avi -i audio.wav -c copy output.mkv')
-
+                                        (frame.shape[1], frame.shape[0]), True)
+                        writer.write(labelledImg)        
+            else:            
+                if writer is None:
+                    # Initialize the video writer
+                    fourcc = cv.VideoWriter_fourcc(*"MJPG")
+                    writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,
+                                            (frame.shape[1], frame.shape[0]), True)
+                writer.write(frame)
+            frameCount += 1  
+        print("[INFO] Cleaning up...")
+        writer.release()
+        vid.release()
+        #Binding the audio file to the output.avi file
+        os.system('ffmpeg -i output.avi -i audio.wav -c copy output.mkv')
     else:
-        print("Please enter the video path..")
+        "Input video path is error"    
