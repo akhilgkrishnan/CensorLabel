@@ -7,10 +7,14 @@ import subprocess
 #initilization of main window
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 m=tk.Tk()
 =======
 m=tkinter.Tk()
 >>>>>>> parent of 4097696... add fps
+=======
+m=tkinter.Tk()
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
 m.title('Statutory warning generator') 
 m.geometry("267x180")
 m.configure(background="light blue")
@@ -18,6 +22,7 @@ m.configure(background="light blue")
 #getting file location
 m.filename =  filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("mp4 files","*.mp4"),("mpv files","*.mpv"),("all files","*.*")))
 print (m.filename)
+<<<<<<< HEAD
 <<<<<<< HEAD
 tempfilename = (m.filename[:30] + '..') if len(m.filename) > 30 else m.filename
 =======
@@ -34,6 +39,9 @@ tempfilename = (m.filename[:15] + '..') if len(m.filename) > 15 else m.filename
 =======
 tempfilename = (m.filename[:15] + '..') if len(m.filename) > 15 else m.filename
 >>>>>>> parent of 4097696... add fps
+=======
+tempfilename = (m.filename[:15] + '..') if len(m.filename) > 15 else m.filename
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
 
 #start button Call
 def startCall():
@@ -57,6 +65,7 @@ def startCall():
     for i in range(noofframe):
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         f.write("../yolocv/%d.jpg\n" % (i+1))
 =======
         f.write("../alpha/%d.jpg\n" % (i+1))
@@ -64,10 +73,14 @@ def startCall():
 =======
         f.write("../alpha/%d.jpg\n" % (i+1))
 >>>>>>> parent of 4097696... add fps
+=======
+        f.write("../alpha/%d.jpg\n" % (i+1))
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     f.close()
     
     #to test all frame in darknet
     os.chdir('../darknet')
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     os.system('./darknet detector valid data/obj.data sample/yolov3-custom.cfg yolohelmet.weights')
@@ -77,6 +90,9 @@ def startCall():
 =======
     os.system('./darknet detector valid data/obj.data y.cfg backup/yolov3_16000.weights')
 >>>>>>> parent of 4097696... add fps
+=======
+    os.system('./darknet detector valid data/obj.data y.cfg backup/yolov3_16000.weights')
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     
     #to get file directory and name
     nfilename=m.filename
@@ -96,6 +112,7 @@ def startCall():
     f2= open(newfiledir+newfilename+".srt","w+")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     f1= open("../darknet/results/comp4_det_test_with_helmet.txt","r+")
 =======
     f1= open("../darknet/results/comp4_det_test_smoke.txt","r+")
@@ -103,6 +120,9 @@ def startCall():
 =======
     f1= open("../darknet/results/comp4_det_test_smoke.txt","r+")
 >>>>>>> parent of 4097696... add fps
+=======
+    f1= open("../darknet/results/comp4_det_test_smoke.txt","r+")
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     for line in f1:
         li = list(line.split(" ")) 
         time=int(li[0])    
@@ -140,6 +160,7 @@ def startCall():
     f2.close()
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     os.chdir('../yolocv')
 =======
     os.chdir('../alpha')
@@ -147,6 +168,9 @@ def startCall():
 =======
     os.chdir('../alpha')
 >>>>>>> parent of 4097696... add fps
+=======
+    os.chdir('../alpha')
+>>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
     for i in range(1,noofframe+1):
         os.remove(str(i)+".jpg")
     
