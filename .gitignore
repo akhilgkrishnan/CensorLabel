@@ -1,26 +1,11 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
-=======
->>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
 *.weights
 *.swp
 images/
 __pycache__/
 *.avi
-<<<<<<< HEAD
-<<<<<<< HEAD
 *.mp4
 *.wav
 *.mkv
-=======
-=======
->>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
-=======
-=======
->>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -150,11 +135,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 69f1622958389feadc8cbf27c73e84e31456f447
->>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
-=======
->>>>>>> 69f1622958389feadc8cbf27c73e84e31456f447
->>>>>>> ca3a2cca6597fb836eaf2963885ff7fbc23995c9
+
