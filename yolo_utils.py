@@ -41,7 +41,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
-            if 2 in classids: #Check the detected item is smoking
+            if 0 in classids: #Check the detected item is smoking
                 add_label(img,height,'smoke.png')
                 labelledImg = cv.imread("pasted_image.jpg")
                 detect = 1
@@ -50,6 +50,10 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                 detect =2
             else:
                 labelledImg = img
+            return labelledImg,detect    
+    else:
+        return img,detect
+
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
     confidences = []
