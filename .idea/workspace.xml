@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="937d151b-9916-472e-b7ce-4b07b7e4e936" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/yolocv.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pasted_image.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pasted_image.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/yolo.py" beforeDir="false" afterPath="$PROJECT_DIR$/yolo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yolo_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/yolo_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,9 +44,21 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="597" y="92" width="782" height="930" key="CommitChangelistDialog2/67.27.1853.1053@67.27.1853.1053" timestamp="1583690262547" />
+    <state x="167" y="127" width="1653" height="853" key="DiffContextDialog" timestamp="1584447694779">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="167" y="127" width="1653" height="853" key="DiffContextDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1584447694779" />
+    <state x="837" y="470" width="303" height="174" key="VCS.ChangelistChooser" timestamp="1584446887361">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="837" y="470" width="303" height="174" key="VCS.ChangelistChooser/67.27.1853.1053@67.27.1853.1053" timestamp="1584446887361" />
     <state x="588" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583690247765">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="588" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/67.27.1853.1053@67.27.1853.1053" timestamp="1583690247765" />
+    <state x="649" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1584446818135">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="649" y="381" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1584446818135" />
   </component>
 </project>
