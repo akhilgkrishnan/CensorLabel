@@ -5,6 +5,7 @@ import time
 import os
 from yolo_utils import infer_image, add_label
 from PIL import Image
+from pathlib import Path
 
 FLAGS = []
 
@@ -94,8 +95,9 @@ if __name__ == '__main__':
     print(layer_names)
 
     if FLAGS.video_path:
+        
         #Extracting the audio file from the video file
-        os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn audio.wav')
+        os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(FLAGS.video_path).stem+'-audio.wav')
         
         vid = cv.VideoCapture(FLAGS.video_path)
         fps = vid.get(cv.CAP_PROP_FPS)
@@ -184,7 +186,7 @@ if __name__ == '__main__':
         writer.release()
         vid.release()
         #Binding the audio file to the output.avi file
-        os.system('ffmpeg -i output.avi -i audio.wav -c copy output.mkv')
+        os.system('ffmpeg -i output.avi -i Audio/'+Path(FLAGS.video_path).stem+'-audio.wav -c copy Video/'+Path(FLAGS.video_path).stem+'-Ouput.mkv')
 
         endt = time.time()
 
