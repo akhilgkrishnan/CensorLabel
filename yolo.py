@@ -59,6 +59,10 @@ if __name__ == '__main__':
 
     FLAGS, unparsed = parser.parse_known_args()
     
+    # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
+    net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
+    print("sucess")
+   
     
     if FLAGS.use_gpu:
     	# set CUDA as the preferable backend and target
@@ -76,10 +80,6 @@ if __name__ == '__main__':
     # Intializing colors to represent each label uniquely
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
 
-
-    # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
-    net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
-    print("sucess")
    
 
     # Get the output layer names of the model
@@ -111,16 +111,16 @@ if __name__ == '__main__':
                 height , width = frame.shape[:2]
             #Take first frame from each second for detection  
 
-            if(frameCount%fps==0):
+            if(frameCount%1==0):
                 frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, frameCount)
             if writer is None:
                 # Initialize the video writer
                 fourcc = cv.VideoWriter_fourcc(*"MJPG")
                 writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,(frame.shape[1], frame.shape[0]), True)
-                writer.write(frame)
+            writer.write(frame)
                     #Check the frame contain any detection, if detection is occur, label statutory warning on the next 120 frames
             if(detect==1):
-                for i in range(1,120):
+                for i in range(1,10):
                     grabbed,frame = vid.read()
                     frameCount += 1
                     print("Frame count",frameCount)
