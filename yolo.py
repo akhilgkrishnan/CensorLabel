@@ -55,10 +55,15 @@ if __name__ == '__main__':
     parser.add_argument("-u", "--use_gpu", 
                         type=bool, 
                         default=False,
-	                    help="boolean indicating if CUDA GPU should be used.")                    
+	                    help="boolean indicating if CUDA GPU should be used.")
+    parser.add_argument("-d", "--display", 
+                        type=bool, 
+                        default=False,
+	                    help="Show frame display")                                        
 
     FLAGS, unparsed = parser.parse_known_args()
     
+    startt = time.time()
     # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
     net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
     print("sucess")
@@ -94,6 +99,7 @@ if __name__ == '__main__':
         
         vid = cv.VideoCapture(FLAGS.video_path)
         fps = vid.get(cv.CAP_PROP_FPS)
+        fpsint = int(fps)
         print("FPS is :",fps)
         height , width =  None, None
         writer = None
@@ -111,22 +117,31 @@ if __name__ == '__main__':
                 height , width = frame.shape[:2]
             #Take first frame from each second for detection  
 
-            if(frameCount%1==0):
+            if(frameCount%fpsint==0):
                 frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, frameCount)
-            if writer is None:
-                # Initialize the video writer
-                fourcc = cv.VideoWriter_fourcc(*"MJPG")
-                writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,(frame.shape[1], frame.shape[0]), True)
-            writer.write(frame)
+
+            # ims = cv.resize(frame, (960, 540))                    # Resize image
+            # cv.imshow("Frame", ims)
+            # key = cv.waitKey(1) & 0xFF    
+            # if writer is None:
+            #     # Initialize the video writer
+            #     fourcc = cv.VideoWriter_fourcc(*"MJPG")
+            #     writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,(frame.shape[1], frame.shape[0]), True)
+            # writer.write(frame)
                     #Check the frame contain any detection, if detection is occur, label statutory warning on the next 120 frames
-            if(detect==1):
-                for i in range(1,10):
+            if(detect==2):
+                for i in range(1,fpsint*5):
                     grabbed,frame = vid.read()
                     frameCount += 1
                     print("Frame count",frameCount)
                     height, width = frame.shape[:2]
                     add_label(frame,height,'smoke.png')
                     labelledImg = cv.imread("pasted_image.jpg")
+
+                    if FLAGS.display:
+                        ims = cv.resize(labelledImg, (960, 540))                    # Resize image
+                        cv.imshow("Frame", ims)
+                        key = cv.waitKey(1) & 0xFF
                     if writer is None:
 
                         # Initialize the video writer
@@ -134,20 +149,30 @@ if __name__ == '__main__':
                         writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,(frame.shape[1], frame.shape[0]), True)
                     writer.write(labelledImg)
             elif(detect==2):
-                for i in range(1,120):
+                for i in range(1,fpsint*5):
                     grabbed,frame = vid.read()
                     frameCount += 1
                     print("Frame count",frameCount)
                     height, width = frame.shape[:2]
                     add_label(frame,height,'helmet.png')
                     labelledImg = cv.imread("pasted_image.jpg")
+
+                    if FLAGS.display:
+                        ims = cv.resize(labelledImg, (960, 540))                    # Resize image
+                        cv.imshow("Frame", ims)
+                        key = cv.waitKey(1) & 0xFF
                     if writer is None:
                         # Initialize the video writer
                         fourcc = cv.VideoWriter_fourcc(*"MJPG")
                         writer = cv.VideoWriter(FLAGS.video_output_path, fourcc, fps,
                                         (frame.shape[1], frame.shape[0]), True)
                         writer.write(labelledImg)        
-            else:            
+            else:
+                if FLAGS.display:
+
+                    ims = cv.resize(frame, (960, 540))                    # Resize image
+                    cv.imshow("Frame", ims)
+                    key = cv.waitKey(1) & 0xFF            
                 if writer is None:
                     # Initialize the video writer
                     fourcc = cv.VideoWriter_fourcc(*"MJPG")
@@ -160,5 +185,9 @@ if __name__ == '__main__':
         vid.release()
         #Binding the audio file to the output.avi file
         os.system('ffmpeg -i output.avi -i audio.wav -c copy output.mkv')
+
+        endt = time.time()
+
+        print("The total time taken for entire process is :",endt-startt," Seconds")
     else:
         "Input video path is error"    
