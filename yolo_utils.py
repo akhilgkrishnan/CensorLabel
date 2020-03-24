@@ -35,17 +35,41 @@ def bb_intersection_over_union(boxA, boxB):
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount):
     # If there are any detections
     detect = 0
-    
+    box1 = 0
+    box2 = 0
     if len(idxs) > 0:
         
         print("idxs :",idxs.flatten())
-        for i in idxs.flatten():
-            # Get the bounding box coordinates
-            if(i==0):
+        motorcycle = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
+        helmet = list(filter(lambda x: classids[x] == 2,idxs.flatten()))
+        whelmet = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
+
+        print("Motorcycle :",motorcycle)
+        print("helmet :",helmet)
+        print("whelmet :",whelmet)
+
+        if len(motorcycle) != 0:
+            for i in motorcycle:
                 x, y = boxes[i][0], boxes[i][1]
                 w, h = boxes[i][2], boxes[i][3]
-            print("size is x= %d ,y=%d , w=%d, h=%d",x,y,w,h)
-            # Get the unique color for this class
+                motorBox = [x,y,w,h]
+                if len(helmet) != 0:
+                    for j in helmet:
+                        x, y = boxes[i][0], boxes[i][1]
+                        w, h = boxes[i][2], boxes[i][3]
+                        helmetBox = [x,y,w,h]
+                        iou = bb_intersection_over_union(motorBox,helmetBox)
+                        if iou > 0.75:
+                            print("Person wear helmet")
+                if len(whelmet) != 0:
+                    for j in whelmet:
+                        x, y = boxes[i][0], boxes[i][1]
+                        w, h = boxes[i][2], boxes[i][3]
+                        whelmetBox = [x,y,w,h]
+                        iou = bb_intersection_over_union(motorBox,whelmetBox)
+                        if iou > 0.75:
+                            print("Person not wear helmet")
+                
             color = [int(c) for c in colors[classids[i]]]
 
             # Draw the bounding box rectangle and label on the image
