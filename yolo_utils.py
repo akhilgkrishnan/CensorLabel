@@ -61,6 +61,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         iou = bb_intersection_over_union(motorBox,helmetBox)
                         if iou > 0.75:
                             print("Person wear helmet")
+                        else:
+                            print("person not weared helmet")    
                 if len(whelmet) != 0:
                     for j in whelmet:
                         x, y = boxes[i][0], boxes[i][1]
