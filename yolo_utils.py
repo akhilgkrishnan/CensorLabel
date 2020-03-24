@@ -26,6 +26,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
     detect = 0
     
     if len(idxs) > 0:
+        
+        print("idxs :",idxs.flatten())
         for i in idxs.flatten():
             # Get the bounding box coordinates
             x, y = boxes[i][0], boxes[i][1]
@@ -35,24 +37,25 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             color = [int(c) for c in colors[classids[i]]]
 
             # Draw the bounding box rectangle and label on the image
-            #cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            #text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            #cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
-            if 0 in classids: #Check the detected item is smoking
-                add_label(img,height,'smoke.png')
-                labelledImg = cv.imread("pasted_image.jpg")
-                detect = 1
-            elif 1 in classids:
-                labelledImg = cv.imread("pasted_image.jpg")
-                detect =2
-            else:
-                labelledImg = img
-            return labelledImg,detect    
-    else:
-        return img,detect
+            # if 0 in classids: #Check the detected item is smoking
+            #     add_label(img,height,'smoke.png')
+            #     labelledImg = cv.imread("pasted_image.jpg")
+            #     detect = 1
+            # elif 1 in classids:
+            #     labelledImg = cv.imread("pasted_image.jpg")
+            #     detect =2
+            # else:
+            #     labelledImg = img
+            # return labelledImg,detect    
+    cv.imshow("frame",img)
+    key = cv.waitKey(1) & 0xFF
+    return img,5
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []

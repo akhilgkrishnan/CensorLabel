@@ -48,8 +48,5 @@ exitButton.grid(row=0,column=1)
 
 
 
-
-
-
 c.pack()
 root.mainloop()
