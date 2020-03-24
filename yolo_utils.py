@@ -91,7 +91,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             # return labelledImg,detect    
     cv.imshow("frame",img)
     key = cv.waitKey(1) & 0xFF
-    return img,5
+    
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
@@ -157,5 +157,4 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         
     # Draw labels and boxes on the image
     img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount)
-    
-    return img, detect
+    return img,detect
