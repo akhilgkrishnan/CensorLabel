@@ -41,16 +41,17 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
         print("idxs :",idxs.flatten())
         for i in idxs.flatten():
             # Get the bounding box coordinates
-            x, y = boxes[i][0], boxes[i][1]
-            w, h = boxes[i][2], boxes[i][3]
+            if(i==0):
+                x, y = boxes[i][0], boxes[i][1]
+                w, h = boxes[i][2], boxes[i][3]
             print("size is x= %d ,y=%d , w=%d, h=%d",x,y,w,h)
             # Get the unique color for this class
             color = [int(c) for c in colors[classids[i]]]
 
             # Draw the bounding box rectangle and label on the image
-            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
