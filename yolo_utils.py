@@ -18,6 +18,17 @@ def add_label(img,height,dtype):
     position = (10,height-65)
     image_copy.paste(logo, position,logo)
     image_copy.save("pasted_image.jpg")
+def bb_intersection_over_union(boxA, boxB):
+    # determine the (x, y)-coordinates of the intersection rectangle
+    xA = max(boxA[0], boxB[0])
+    yA = max(boxA[1], boxB[1])
+    xB = min(boxA[2], boxB[2])
+    yB = min(boxA[3], boxB[3])
+    interArea = (xB - xA + 1) * (yB - yA + 1)
+    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    iou = interArea / float(boxAArea + boxBArea - interArea)
+    return iou    
  
     
     
@@ -32,7 +43,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             # Get the bounding box coordinates
             x, y = boxes[i][0], boxes[i][1]
             w, h = boxes[i][2], boxes[i][3]
-            
+            print("size is x= %d ,y=%d , w=%d, h=%d",x,y,w,h)
             # Get the unique color for this class
             color = [int(c) for c in colors[classids[i]]]
 
@@ -73,7 +84,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
             confidence = scores[classid]
             
             # Consider only the predictions that are above a certain confidence level
-            if confidence > tconf:
+            if confidence > 0.3:
                 # TODO Check detection
                 box = detection[0:4] * np.array([width, height, width, height])
                 centerX, centerY, bwidth, bheight = box.astype('int')
