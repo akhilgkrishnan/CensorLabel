@@ -32,7 +32,7 @@ def bb_intersection_over_union(boxA, boxB):
  
     
     
-def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount):
+def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height):
     # If there are any detections
     detect = 0
     box1 = 0
@@ -70,12 +70,15 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         if iou > 0.75:
                             print("Person not wear helmet")
                 
-            color = [int(c) for c in colors[classids[i]]]
+        color = [int(c) for c in colors[classids[i]]]
 
-            # Draw the bounding box rectangle and label on the image
-            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        # Draw the bounding box rectangle and label on the image
+        for i in idxs.flatten():
+            x, y = boxes[i][0], boxes[i][1]
+            w, h = boxes[i][2], boxes[i][3]
+            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
@@ -89,8 +92,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             # else:
             #     labelledImg = img
             # return labelledImg,detect    
-    cv.imshow("frame",img)
-    key = cv.waitKey(1) & 0xFF
+    cv.imwrite("frame.jpg",img)
+    return img,detect
     
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
@@ -126,7 +129,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     return boxes, confidences, classids
 
-def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,frameCount, 
+def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS, 
             boxes=None, confidences=None, classids=None, idxs=None, infer=True):
     
     if infer:
@@ -156,5 +159,5 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount)
+    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height)
     return img,detect
