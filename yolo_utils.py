@@ -55,18 +55,22 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                 motorBox = [x,y,w,h]
                 if len(helmet) != 0:
                     for j in helmet:
-                        x, y = boxes[i][0], boxes[i][1]
-                        w, h = boxes[i][2], boxes[i][3]
+                        x, y = boxes[j][0], boxes[j][1]
+                        w, h = boxes[j][2], boxes[j][3]
                         helmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,helmetBox)
                         if iou > 0.75:
                             print("Person wear helmet")
+                            color = [int(c) for c in colors[classids[j]]]
+                            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+                            text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
+                            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                         else:
                             print("person not weared helmet")    
                 if len(whelmet) != 0:
-                    for j in whelmet:
-                        x, y = boxes[i][0], boxes[i][1]
-                        w, h = boxes[i][2], boxes[i][3]
+                    for k in whelmet:
+                        x, y = boxes[k][0], boxes[k][1]
+                        w, h = boxes[k][2], boxes[k][3]
                         whelmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
                         if iou > 0.75:
