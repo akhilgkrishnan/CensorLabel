@@ -19,15 +19,17 @@ def add_label(img,height,dtype):
     image_copy.paste(logo, position,logo)
     image_copy.save("pasted_image.jpg")
 def bb_intersection_over_union(boxA, boxB):
+
+    print(boxA)
+    print(boxB)
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
     yA = max(boxA[1], boxB[1])
     xB = min(boxA[2], boxB[2])
     yB = min(boxA[3], boxB[3])
-    interArea = (xB - xA + 1) * (yB - yA + 1)
-    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
-    iou = interArea / float(boxAArea + boxBArea - interArea)
+    intersectionArea = (xB - xA) * (yB - yA)
+    unionArea = (boxA[2]*boxA[3])+(boxB[2]*boxB[3])-intersectionArea;
+    iou = intersectionArea/unionArea;   
     return iou    
  
     
@@ -53,32 +55,53 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                 x, y = boxes[i][0], boxes[i][1]
                 w, h = boxes[i][2], boxes[i][3]
                 motorBox = [x,y,w,h]
+                # color = [int(c) for c in colors[classids[i]]]
+                # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+                # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+                # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 if len(helmet) != 0:
                     for j in helmet:
-                        x, y = boxes[i][0], boxes[i][1]
-                        w, h = boxes[i][2], boxes[i][3]
+                        x, y = boxes[j][0], boxes[j][1]
+                        w, h = boxes[j][2], boxes[j][3]
                         helmetBox = [x,y,w,h]
+                        
                         iou = bb_intersection_over_union(motorBox,helmetBox)
-                        if iou > 0.75:
+                        print("iou ",iou)
+                        if iou < 0.2:
+                            color = [int(c) for c in colors[classids[j]]]
+                            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+                            text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
+                            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                             print("Person wear helmet")
+                            
+                            
+                        else:
+                            print("person not weared helmet")    
                 if len(whelmet) != 0:
-                    for j in whelmet:
-                        x, y = boxes[i][0], boxes[i][1]
-                        w, h = boxes[i][2], boxes[i][3]
+                    for k in whelmet:
+                        x, y = boxes[k][0], boxes[k][1]
+                        w, h = boxes[k][2], boxes[k][3]
                         whelmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
-                        if iou > 0.75:
+                        print("iou ",iou)
+                        if iou < 0:
+                            # color = [int(c) for c in colors[classids[k]]]
+                            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+                            # text = "{}: {:4f}".format(labels[classids[k]], confidences[k])
+                            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                            
                             print("Person not wear helmet")
-                
-        color = [int(c) for c in colors[classids[i]]]
+        # for i in idxs.flatten():  
+        #     x, y = boxes[i][0], boxes[i][1]
+        #     w, h = boxes[i][2], boxes[i][3]                  
+        #     color = [int(c) for c in colors[classids[j]]]
+        #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+        #     text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
+        #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        
 
-        # Draw the bounding box rectangle and label on the image
-        for i in idxs.flatten():
-            x, y = boxes[i][0], boxes[i][1]
-            w, h = boxes[i][2], boxes[i][3]
-            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+       
+           
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
