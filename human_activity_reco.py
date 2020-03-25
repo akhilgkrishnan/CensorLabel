@@ -18,7 +18,7 @@ ap.add_argument("-i", "--input", type=str, default="",
 ap.add_argument("-vo","--output",type=str,default="./output.avi",
 	help="Video output name")
 ap.add_argument("-gpu","--use_gpu", type=bool,default=False,
-	help="Using CUDA GPU support")		
+	help="Using OpenCV DNN CUDA GPU support")		
 args = vars(ap.parse_args())
 
 # load the contents of the class labels file, then define the sample
