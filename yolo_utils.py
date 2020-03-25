@@ -33,61 +33,74 @@ def bb_intersection_over_union(boxA, boxB):
     
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels):
     # If there are any detections
+    print(boxes)
     detect = 0
     box1 = 0
     box2 = 0
     if len(idxs) > 0:
         
-        print("idxs :",idxs.flatten())
-        motorcycle = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
-        helmet = list(filter(lambda x: classids[x] == 2,idxs.flatten()))
-        whelmet = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
+        # print("idxs :",idxs.flatten())
+        # motorcycle = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
+        # helmet = list(filter(lambda x: classids[x] == 2,idxs.flatten()))
+        # whelmet = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
 
-        print("Motorcycle :",motorcycle)
-        print("helmet :",helmet)
-        print("whelmet :",whelmet)
+        # print("Motorcycle :",motorcycle)
+        # print("helmet :",helmet)
+        # print("whelmet :",whelmet)
        
-        if len(motorcycle) != 0:
-            for i in motorcycle:
-                x, y = boxes[i][0], boxes[i][1]
-                w, h = boxes[i][2], boxes[i][3]
-                motorBox = [x,y,w,h]
-                # crop_img = img[y:y+h, x:x+w]
-                # cv.imshow("cropped", crop_img)
-                # cv.waitKey(0)
-                # exit(0)
-                if len(helmet) != 0:
-                    for j in helmet:
-                        x, y = boxes[j][0], boxes[j][1]
-                        w, h = boxes[j][2], boxes[j][3]
-                        helmetBox = [x,y,w,h]
-                        iou = bb_intersection_over_union(motorBox,helmetBox)
-                        if iou > 0.75:
-                            print("Person wear helmet")
-                            color = [int(c) for c in colors[classids[j]]]
-                            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-                            text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
-                            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                        else:
-                            print("person not weared helmet")    
-                if len(whelmet) != 0:
-                    for k in whelmet:
-                        x, y = boxes[k][0], boxes[k][1]
-                        w, h = boxes[k][2], boxes[k][3]
-                        whelmetBox = [x,y,w,h]
-                        iou = bb_intersection_over_union(motorBox,whelmetBox)
-                        if iou > 0.75:
-                            print("Person not wear helmet")
-                
-            color = [int(c) for c in colors[classids[i]]]
+        # if len(motorcycle) != 0:
+        #     for i in motorcycle:
+        #         x, y = boxes[i][0], boxes[i][1]
+        #         w, h = boxes[i][2], boxes[i][3]
+        #         motorBox = [x,y,w,h]
+        #         # crop_img = img[0:y+h, x:x+w]
+        #         # cv.imshow("cropped", crop_img)
+        #         # cv.waitKey(0)
+        #         if len(helmet) != 0:
+        #             for j in helmet:
+        #                 x, y = boxes[j][0], boxes[j][1]
+        #                 w, h = boxes[j][2], boxes[j][3]
+        #                 helmetBox = [x,y,w,h]
+                       
+        #                 iou = bb_intersection_over_union(motorBox,helmetBox)
+        #                 print(iou)
+        #                 if iou < 0.12:
+        #                     print("Person wear helmet")
+        #                     color = [int(c) for c in colors[classids[j]]]
+        #                     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+        #                     text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
+        #                     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        #                 else:
+        #                     print("person not weared helmet")    
+        #         if len(whelmet) != 0:
+        #             for k in whelmet:
+        #                 x, y = boxes[k][0], boxes[k][1]
+        #                 w, h = boxes[k][2], boxes[k][3]
+        #                 whelmetBox = [x,y,w,h]
+                        
+        #                 iou = bb_intersection_over_union(motorBox,whelmetBox)
+        #                 if iou > 0.75:
+        #                     print("Person not wear helmet")
+        # for i in idxs.flatten():   
+        #     x, y = boxes[i][0], boxes[i][1]
+        #     w, h = boxes[i][2], boxes[i][3]     
+        #     color = [int(c) for c in colors[classids[i]]]
 
-            # Draw the bounding box rectangle and label on the image
-            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        #     # Draw the bounding box rectangle and label on the image
+        #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+        #     text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+        #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        # crop_img = img[60:688+205, 167:947+167]
+        x = min(513,167)
+        y = min(60,205)
+        w = max(288,947)
+        h = max(734,688)
+        crop_img = img[y:y+h,x:x+w]
+        cv.imshow("cropped", crop_img)
+        cv.waitKey(0)
               
     cv.imshow("frame",img)
-    key = cv.waitKey(1) & 0xFF
+    key = cv.waitKey(0) & 0xFF
     return img,5
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
@@ -141,7 +154,7 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,
         boxes, confidences, classids = generate_boxes_confidences_classids(outs, height, width, FLAGS.confidence)
         
         # Apply Non-Maxima Suppression to suppress overlapping bounding boxes
-        idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, FLAGS.threshold)
+        idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, 0.9)
     if boxes is None or confidences is None or idxs is None or classids is None:
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
