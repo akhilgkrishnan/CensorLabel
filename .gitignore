@@ -6,6 +6,7 @@ __pycache__/
 *.mp4
 *.wav
 *.mkv
+*.onnx
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
