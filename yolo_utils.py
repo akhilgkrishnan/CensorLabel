@@ -19,22 +19,20 @@ def add_label(img,height,dtype):
     image_copy.paste(logo, position,logo)
     image_copy.save("pasted_image.jpg")
 def bb_intersection_over_union(boxA, boxB):
-
-    print(boxA)
-    print(boxB)
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
     yA = max(boxA[1], boxB[1])
     xB = min(boxA[2], boxB[2])
     yB = min(boxA[3], boxB[3])
-    intersectionArea = (xB - xA) * (yB - yA)
-    unionArea = (boxA[2]*boxA[3])+(boxB[2]*boxB[3])-intersectionArea;
-    iou = intersectionArea/unionArea;   
+    interArea = (xB - xA + 1) * (yB - yA + 1)
+    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
+    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+    iou = interArea / float(boxAArea + boxBArea - interArea)
     return iou    
  
     
     
-def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height):
+def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels):
     # If there are any detections
     detect = 0
     box1 = 0
@@ -49,35 +47,28 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
         print("Motorcycle :",motorcycle)
         print("helmet :",helmet)
         print("whelmet :",whelmet)
-
+       
         if len(motorcycle) != 0:
             for i in motorcycle:
                 x, y = boxes[i][0], boxes[i][1]
                 w, h = boxes[i][2], boxes[i][3]
                 motorBox = [x,y,w,h]
-                # color = [int(c) for c in colors[classids[i]]]
-                # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-                # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-                # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                # crop_img = img[y:y+h, x:x+w]
+                # cv.imshow("cropped", crop_img)
+                # cv.waitKey(0)
+                # exit(0)
                 if len(helmet) != 0:
                     for j in helmet:
                         x, y = boxes[j][0], boxes[j][1]
                         w, h = boxes[j][2], boxes[j][3]
                         helmetBox = [x,y,w,h]
-                        
                         iou = bb_intersection_over_union(motorBox,helmetBox)
-                        print("iou ",iou)
-                        if iou < 0.2:
+                        if iou > 0.75:
+                            print("Person wear helmet")
                             color = [int(c) for c in colors[classids[j]]]
                             cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
                             text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
                             cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                            print("Person wear helmet")
-<<<<<<< HEAD
-                            
-                            
-=======
->>>>>>> iou
                         else:
                             print("person not weared helmet")    
                 if len(whelmet) != 0:
@@ -86,41 +77,19 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         w, h = boxes[k][2], boxes[k][3]
                         whelmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
-                        print("iou ",iou)
-                        if iou < 0:
-                            # color = [int(c) for c in colors[classids[k]]]
-                            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-                            # text = "{}: {:4f}".format(labels[classids[k]], confidences[k])
-                            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-                            
+                        if iou > 0.75:
                             print("Person not wear helmet")
-        # for i in idxs.flatten():  
-        #     x, y = boxes[i][0], boxes[i][1]
-        #     w, h = boxes[i][2], boxes[i][3]                  
-        #     color = [int(c) for c in colors[classids[j]]]
-        #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-        #     text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
-        #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-        
+                
+            color = [int(c) for c in colors[classids[i]]]
 
-       
-           
-            
-            #Adding "smoking injurious to health" label to each smoking detected frame
-
-            # if 0 in classids: #Check the detected item is smoking
-            #     add_label(img,height,'smoke.png')
-            #     labelledImg = cv.imread("pasted_image.jpg")
-            #     detect = 1
-            # elif 1 in classids:
-            #     labelledImg = cv.imread("pasted_image.jpg")
-            #     detect =2
-            # else:
-            #     labelledImg = img
-            # return labelledImg,detect    
-    cv.imwrite("frame.jpg",img)
-    return img,detect
-    
+            # Draw the bounding box rectangle and label on the image
+            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+              
+    cv.imshow("frame",img)
+    key = cv.waitKey(1) & 0xFF
+    return img,5
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
@@ -167,23 +136,17 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,
         net.setInput(blob)
 
         # Getting the outputs from the output layers
-        start = time.time()
         outs = net.forward(layer_names)
-        end = time.time()
 
-        if FLAGS.show_time:
-            print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
-
-        
         # Generate the boxes, confidences, and classIDs
         boxes, confidences, classids = generate_boxes_confidences_classids(outs, height, width, FLAGS.confidence)
         
         # Apply Non-Maxima Suppression to suppress overlapping bounding boxes
         idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, FLAGS.threshold)
-
     if boxes is None or confidences is None or idxs is None or classids is None:
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height)
-    return img,detect
+    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels)
+    
+    return img, detect

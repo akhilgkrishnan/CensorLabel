@@ -92,4 +92,4 @@ if __name__ == '__main__':
         frameCount = 0
         frame = cv.imread(FLAGS.video_path)
         height , width = frame.shape[:2]
-        frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS, frameCount)
+        frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS)
