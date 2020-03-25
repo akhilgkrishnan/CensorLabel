@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--weights',
                         type=str,
-                        default='./yolov3-coco/yolov3hs.weights',
+                        default='./yolov3-coco/helmet6000.weights',
                         help='Path to the file which contains the weights for YOLOv3.')
 
     parser.add_argument('-cfg', '--config',
