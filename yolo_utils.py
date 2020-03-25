@@ -24,11 +24,11 @@ def bb_intersection_over_union(boxA, boxB):
     yA = max(boxA[1], boxB[1])
     xB = min(boxA[2], boxB[2])
     yB = min(boxA[3], boxB[3])
-    interArea = (xB - xA + 1) * (yB - yA + 1)
-    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
-    iou = interArea / float(boxAArea + boxBArea - interArea)
-    return iou    
+    
+    intersectionArea = (xB - xA) * (yB - yA)
+    unionArea = (boxA[2]*boxA[3])+(boxB[2]*boxB[3])-intersectionArea;
+    overlapArea = intersectionArea/unionArea;
+    return overlapArea    
  
     
     
@@ -59,7 +59,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         w, h = boxes[i][2], boxes[i][3]
                         helmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,helmetBox)
-                        if iou > 0.75:
+                        print("iou:",iou)
+                        if iou > 0.0:
                             print("Person wear helmet")
                         else:
                             print("person not weared helmet")    
@@ -69,7 +70,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         w, h = boxes[i][2], boxes[i][3]
                         whelmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
-                        if iou > 0.75:
+                        if iou > 0:
                             print("Person not wear helmet")
                 
             color = [int(c) for c in colors[classids[i]]]
