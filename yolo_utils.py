@@ -114,7 +114,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
             confidence = scores[classid]
             
             # Consider only the predictions that are above a certain confidence level
-            if confidence > 0.5:
+            if confidence > 0.3:
                 # TODO Check detection
                 box = detection[0:4] * np.array([width, height, width, height])
                 centerX, centerY, bwidth, bheight = box.astype('int')
@@ -142,15 +142,20 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         # Perform a forward pass of the YOLO object detector
         net.setInput(blob)
 
-        # Getting the outputs from the output layer
+        # Getting the outputs from the output layers
+        start = time.time()
         outs = net.forward(layer_names)
+        end = time.time()
+
+        if FLAGS.show_time:
+            print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
+
         
         # Generate the boxes, confidences, and classIDs
         boxes, confidences, classids = generate_boxes_confidences_classids(outs, height, width, FLAGS.confidence)
         
         # Apply Non-Maxima Suppression to suppress overlapping bounding boxes
         idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, FLAGS.threshold)
-        print(idxs.flatten())
 
     if boxes is None or confidences is None or idxs is None or classids is None:
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
