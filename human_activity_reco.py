@@ -28,7 +28,7 @@ CLASSES = open(args["classes"]).read().strip().split("\n")
 SAMPLE_DURATION = 32
 SAMPLE_SIZE = 112
 
-labels = ['smoking','drinking beer','driving car','driving tractor','riding a bike','riding scooter','smoking hookah','riding mountain bike']  
+labels = ['smoking','drinking beer','driving car','driving tractor','riding a bike','riding scooter','smoking hookah','riding mountain bike','motorcycling']  
 
 # load the human activity recognition model
 print("[INFO] loading human activity recognition model...")
@@ -43,12 +43,7 @@ if args["use_gpu"]:
 		print("[INFO] setting preferable backend and target to CUDA...")
 		nety.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
 		nety.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
-
-
-
-def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
-    return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
-
+		
 def activity_detect(frames):
 	# now that our frames array is filled we can construct our blob
 	blob = cv.dnn.blobFromImages(frames, 1.0,

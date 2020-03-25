@@ -32,7 +32,7 @@ def bb_intersection_over_union(boxA, boxB):
  
     
     
-def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount):
+def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh):
     # If there are any detections
     detect = 0
     box1 = 0
@@ -78,19 +78,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
             # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
             # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            
-            #Adding "smoking injurious to health" label to each smoking detected frame
-
-            # if 0 in classids: #Check the detected item is smoking
-            #     add_label(img,height,'smoke.png')
-            #     labelledImg = cv.imread("pasted_image.jpg")
-            #     detect = 1
-            # elif 1 in classids:
-            #     labelledImg = cv.imread("pasted_image.jpg")
-            #     detect =2
-            # else:
-            #     labelledImg = img
-            # return labelledImg,detect    
+              
     cv.imshow("frame",img)
     key = cv.waitKey(1) & 0xFF
     return img,5
@@ -128,7 +116,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     return boxes, confidences, classids
 
-def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,frameCount, 
+def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labelh, 
             boxes=None, confidences=None, classids=None, idxs=None, infer=True):
     
     if infer:
@@ -140,24 +128,17 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         net.setInput(blob)
 
         # Getting the outputs from the output layers
-        start = time.time()
         outs = net.forward(layer_names)
-        end = time.time()
 
-        if FLAGS.show_time:
-            print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
-
-        
         # Generate the boxes, confidences, and classIDs
         boxes, confidences, classids = generate_boxes_confidences_classids(outs, height, width, FLAGS.confidence)
         
         # Apply Non-Maxima Suppression to suppress overlapping bounding boxes
         idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, FLAGS.threshold)
-
     if boxes is None or confidences is None or idxs is None or classids is None:
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount)
+    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh)
     
     return img, detect
