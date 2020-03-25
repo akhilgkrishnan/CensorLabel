@@ -24,17 +24,19 @@ def bb_intersection_over_union(boxA, boxB):
     yA = max(boxA[1], boxB[1])
     xB = min(boxA[2], boxB[2])
     yB = min(boxA[3], boxB[3])
-    interArea = (xB - xA + 1) * (yB - yA + 1)
-    boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-    boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
-    iou = interArea / float(boxAArea + boxBArea - interArea)
-    return iou    
+    
+    intersectionArea = (xB - xA) * (yB - yA)
+    unionArea = (boxA[2]*boxA[3])+(boxB[2]*boxB[3])-intersectionArea;
+    overlapArea = intersectionArea/unionArea;
+    return overlapArea    
  
     
     
-def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh):
+def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount):
     # If there are any detections
-    
+    detect = 0
+    box1 = 0
+    box2 = 0
     if len(idxs) > 0:
         
         print("idxs :",idxs.flatten())
@@ -53,34 +55,45 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                 motorBox = [x,y,w,h]
                 if len(helmet) != 0:
                     for j in helmet:
-                        x, y = boxes[j][0], boxes[j][1]
-                        w, h = boxes[j][2], boxes[j][3]
+                        x, y = boxes[i][0], boxes[i][1]
+                        w, h = boxes[i][2], boxes[i][3]
                         helmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,helmetBox)
-                        if iou > 0.75:
+                        print("iou:",iou)
+                        if iou > 0.0:
                             print("Person wear helmet")
-                            # color = [int(c) for c in colors[classids[j]]]
-                            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-                            # text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
-                            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                         else:
                             print("person not weared helmet")    
                 if len(whelmet) != 0:
-                    for k in whelmet:
-                        x, y = boxes[k][0], boxes[k][1]
-                        w, h = boxes[k][2], boxes[k][3]
+                    for j in whelmet:
+                        x, y = boxes[i][0], boxes[i][1]
+                        w, h = boxes[i][2], boxes[i][3]
                         whelmetBox = [x,y,w,h]
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
-                        if iou > 0.75:
+                        if iou > 0:
                             print("Person not wear helmet")
-        for i in idxs.flatten():       
+        for i in idxs.flatten():     
+            x, y = boxes[i][0], boxes[i][1]
+            w, h = boxes[i][2], boxes[i][3]   
             color = [int(c) for c in colors[classids[i]]]
-
+            
             #Draw the bounding box rectangle and label on the image
             cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
             text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
             cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-              
+            
+            #Adding "smoking injurious to health" label to each smoking detected frame
+
+            # if 0 in classids: #Check the detected item is smoking
+            #     add_label(img,height,'smoke.png')
+            #     labelledImg = cv.imread("pasted_image.jpg")
+            #     detect = 1
+            # elif 1 in classids:
+            #     labelledImg = cv.imread("pasted_image.jpg")
+            #     detect =2
+            # else:
+            #     labelledImg = img
+            # return labelledImg,detect    
     cv.imshow("frame",img)
     key = cv.waitKey(1) & 0xFF
     return img,5
@@ -92,7 +105,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     for out in outs:
         for detection in out:
-            #print (detection
+            #print (detection)
             #a = input('GO!')
             
             # Get the scores, classid, and the confidence of the prediction
@@ -101,7 +114,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
             confidence = scores[classid]
             
             # Consider only the predictions that are above a certain confidence level
-            if confidence > 0.3:
+            if confidence > 0.5:
                 # TODO Check detection
                 box = detection[0:4] * np.array([width, height, width, height])
                 centerX, centerY, bwidth, bheight = box.astype('int')
@@ -118,7 +131,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     return boxes, confidences, classids
 
-def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labelh, 
+def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,frameCount, 
             boxes=None, confidences=None, classids=None, idxs=None, infer=True):
     
     if infer:
@@ -129,18 +142,20 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labe
         # Perform a forward pass of the YOLO object detector
         net.setInput(blob)
 
-        # Getting the outputs from the output layers
+        # Getting the outputs from the output layer
         outs = net.forward(layer_names)
-
+        
         # Generate the boxes, confidences, and classIDs
         boxes, confidences, classids = generate_boxes_confidences_classids(outs, height, width, FLAGS.confidence)
         
         # Apply Non-Maxima Suppression to suppress overlapping bounding boxes
         idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, FLAGS.threshold)
+        print(idxs.flatten())
+
     if boxes is None or confidences is None or idxs is None or classids is None:
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh)
+    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount)
     
     return img, detect
