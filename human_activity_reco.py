@@ -34,7 +34,7 @@ labels = ['smoking','drinking beer','driving car','driving tractor','riding a bi
 print("[INFO] loading human activity recognition model...")
 neth = cv.dnn.readNet(args["model"])
 # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
-nety = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/yolov3hs.weights')
+nety = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/helmet6000.weights')
 
 if args["use_gpu"]:
 		print("[INFO] setting preferable backend and target to CUDA...")

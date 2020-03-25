@@ -70,7 +70,10 @@ def yolo_detect(frames,writer,labelh,net,fps):
     for frame in frames:
       
         if width is None or height is None:
-            height , width = frame.shape[:2]
+            width = frame.shape[1]
+            height  = frame.shape[0]
+            
+
 
         frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS,labelh)
         if detect is not 0:

@@ -35,8 +35,6 @@ def bb_intersection_over_union(boxA, boxB):
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount):
     # If there are any detections
     detect = 0
-    box1 = 0
-    box2 = 0
     if len(idxs) > 0:
         
         print("idxs :",idxs.flatten())
@@ -147,8 +145,8 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         outs = net.forward(layer_names)
         end = time.time()
 
-        if FLAGS.show_time:
-            print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
+        # if FLAGS.show_time:
+        #     print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
 
         
         # Generate the boxes, confidences, and classIDs
