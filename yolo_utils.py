@@ -73,8 +73,11 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                             text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
                             cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                             print("Person wear helmet")
+<<<<<<< HEAD
                             
                             
+=======
+>>>>>>> iou
                         else:
                             print("person not weared helmet")    
                 if len(whelmet) != 0:
