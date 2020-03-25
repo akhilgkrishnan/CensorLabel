@@ -72,13 +72,13 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
                         if iou > 0:
                             print("Person not wear helmet")
-                
+        for i in idxs.flatten():        
             color = [int(c) for c in colors[classids[i]]]
 
-            # Draw the bounding box rectangle and label on the image
-            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            #Draw the bounding box rectangle and label on the image
+            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
@@ -112,7 +112,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
             confidence = scores[classid]
             
             # Consider only the predictions that are above a certain confidence level
-            if confidence > 0.3:
+            if confidence > 0.5:
                 # TODO Check detection
                 box = detection[0:4] * np.array([width, height, width, height])
                 centerX, centerY, bwidth, bheight = box.astype('int')
@@ -154,6 +154,7 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         
         # Apply Non-Maxima Suppression to suppress overlapping bounding boxes
         idxs = cv.dnn.NMSBoxes(boxes, confidences, FLAGS.confidence, FLAGS.threshold)
+        print(idxs.flatten())
 
     if boxes is None or confidences is None or idxs is None or classids is None:
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
