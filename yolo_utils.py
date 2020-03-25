@@ -34,9 +34,7 @@ def bb_intersection_over_union(boxA, boxB):
     
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh):
     # If there are any detections
-    detect = 0
-    box1 = 0
-    box2 = 0
+    
     if len(idxs) > 0:
         
         print("idxs :",idxs.flatten())
@@ -61,10 +59,10 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         iou = bb_intersection_over_union(motorBox,helmetBox)
                         if iou > 0.75:
                             print("Person wear helmet")
-                            color = [int(c) for c in colors[classids[j]]]
-                            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-                            text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
-                            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                            # color = [int(c) for c in colors[classids[j]]]
+                            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+                            # text = "{}: {:4f}".format(labels[classids[j]], confidences[j])
+                            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                         else:
                             print("person not weared helmet")    
                 if len(whelmet) != 0:
@@ -75,13 +73,13 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                         iou = bb_intersection_over_union(motorBox,whelmetBox)
                         if iou > 0.75:
                             print("Person not wear helmet")
-                
+        for i in idxs.flatten():       
             color = [int(c) for c in colors[classids[i]]]
 
-            # Draw the bounding box rectangle and label on the image
-            # cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            # text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            # cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            #Draw the bounding box rectangle and label on the image
+            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
               
     cv.imshow("frame",img)
     key = cv.waitKey(1) & 0xFF
@@ -94,7 +92,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     for out in outs:
         for detection in out:
-            #print (detection)
+            #print (detection
             #a = input('GO!')
             
             # Get the scores, classid, and the confidence of the prediction
