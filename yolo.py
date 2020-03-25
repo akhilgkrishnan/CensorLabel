@@ -4,7 +4,6 @@ import cv2 as cv
 import time
 import os
 from yolo_utils import infer_image, add_label
-from PIL import Image
 from pathlib import Path
 
 FLAGS = []
@@ -66,20 +65,18 @@ def yolo_detect(frames,writer,labelh,net,fps):
     #os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(FLAGS.video_path).stem+'-audio.wav')
     height , width =  None, None
     writer = None
-    frameCount = 0
+
     for frame in frames:
       
         if width is None or height is None:
             width = frame.shape[1]
             height  = frame.shape[0]
-            
-
-
-        frame, detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS,labelh)
-        if detect is not 0:
-            return frame,detect
-            break
-    return 0,0            
+        
+        detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS,labelh)
+        if detect == 0:
+            continue
+        else:
+            return detect            
     #Binding the audio file to the output.avi file
     #os.system('ffmpeg -i output.avi -i Audio/'+Path(FLAGS.video_path).stem+'-audio.wav -c copy Video/'+Path(FLAGS.video_path).stem+'-Ouput.mkv')
 

@@ -4,27 +4,15 @@ import cv2 as cv
 import subprocess
 import time
 import os
-from PIL import Image 
 
 
-def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
-    return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
-def add_label(img,height,dtype):
-    logo = Image.open(dtype)
-    pil_img = cv2_to_pil(img)
-    logo = logo.convert("RGBA")
-    logo = logo.resize((250,40))
-    image_copy = pil_img.copy()
-    position = (10,height-65)
-    image_copy.paste(logo, position,logo)
-    image_copy.save("pasted_image.jpg")
+#Determine the IOU of two bounding boxes
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
     yA = max(boxA[1], boxB[1])
     xB = min(boxA[2], boxB[2])
     yB = min(boxA[3], boxB[3])
-    
     intersectionArea = (xB - xA) * (yB - yA)
     unionArea = (boxA[2]*boxA[3])+(boxB[2]*boxB[3])-intersectionArea;
     overlapArea = intersectionArea/unionArea;
@@ -34,9 +22,9 @@ def bb_intersection_over_union(boxA, boxB):
     
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh):
     # If there are any detections
-    detect = 0
+
     if len(idxs) > 0:
-        if
+        
         print("idxs :",idxs.flatten())
 
         motorcycle = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
@@ -60,18 +48,19 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                             helmetBox = [x,y,w,h]
                             iou = bb_intersection_over_union(motorBox,helmetBox)
                             print("iou:",iou)
-                            if iou > 0.1:
-                                print("Person wear helmet")
+                            if iou < 0.1:
+                                return 0 #person weared helmet
                             else:
-                                print("person not weared helmet")    
+                                return 1 #person not weared helmet   
                     if len(whelmet) != 0:
                         for j in whelmet:
                             x, y = boxes[i][0], boxes[i][1]
                             w, h = boxes[i][2], boxes[i][3]
                             whelmetBox = [x,y,w,h]
                             iou = bb_intersection_over_union(motorBox,whelmetBox)
-                            if iou > 0.1:
-                                print("Person not wear helmet")
+                            if iou < 0.1:
+                                return 1 #person not weared helmet
+                                
         # for i in idxs.flatten():     
         #     x, y = boxes[i][0], boxes[i][1]
         #     w, h = boxes[i][2], boxes[i][3]   
@@ -83,9 +72,10 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
         #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
              
-    cv.imshow("frame",img)
-    key = cv.waitKey(1) & 0xFF
-    return img,5
+    # cv.imshow("frame",img)
+    # key = cv.waitKey(1) & 0xFF
+    else:
+        return 0
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
@@ -150,6 +140,6 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labe
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh)
+    detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh)
     
-    return img, detect
+    return detect

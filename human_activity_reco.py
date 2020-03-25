@@ -5,7 +5,7 @@ import cv2 as cv
 from PIL import Image
 import time
 from yolo import yolo_detect
-from yolo import add_label
+from Statutory import add_warning
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -97,7 +97,7 @@ while True:
 		label = firstLabel
 		print("label is :",label)
 		if label in labels:
-			sample,detect = yolo_detect(frames,writer,label,nety,fps)
+			detect = yolo_detect(frames,writer,label,nety,fps)
 			print("detect is",detect)
 			if detect == 1:
 				for i in range(0,84):
@@ -105,7 +105,7 @@ while True:
 					frames.append(frame)
 
 				for frame in frames:
-					add_label(frame,frame.shape[0],"smoke.png")
+					add_warning(frame,frame.shape[0],"helmet.png")
 					frame = cv.imread("pasted_image.jpg")
 					#Initialize the video writer
 					if writer is None:
