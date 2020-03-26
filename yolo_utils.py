@@ -61,19 +61,19 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                             if iou < 0.1:
                                 return 1 #person not weared helmet
                                 
-        # for i in idxs.flatten():     
-        #     x, y = boxes[i][0], boxes[i][1]
-        #     w, h = boxes[i][2], boxes[i][3]   
-        #     color = [int(c) for c in colors[classids[i]]]
+        for i in idxs.flatten():     
+            x, y = boxes[i][0], boxes[i][1]
+            w, h = boxes[i][2], boxes[i][3]   
+            color = [int(c) for c in colors[classids[i]]]
             
-        #     #Draw the bounding box rectangle and label on the image
-        #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-        #     text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-        #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            #Draw the bounding box rectangle and label on the image
+            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
              
-    # cv.imshow("frame",img)
-    # key = cv.waitKey(1) & 0xFF
+        cv.imshow("frame",img)
+        key = cv.waitKey(1) & 0xFF
     else:
         return 0
 

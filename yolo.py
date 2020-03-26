@@ -3,7 +3,7 @@ import argparse
 import cv2 as cv
 import time
 import os
-from yolo_utils import infer_image, add_label
+from yolo_utils import infer_image
 from pathlib import Path
 
 FLAGS = []

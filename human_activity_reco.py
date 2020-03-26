@@ -105,7 +105,7 @@ while True:
 					frames.append(frame)
 
 				for frame in frames:
-					add_warning(frame,frame.shape[0],"helmet.png")
+					add_warning(frame,frame.shape[0],"Images/statutory/smoke.png")
 					frame = cv.imread("pasted_image.jpg")
 					#Initialize the video writer
 					if writer is None:
@@ -138,17 +138,5 @@ vid.release()
 	# 	# draw the predicted activity on the frame
 	# 	cv2.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
 	# 	cv2.putText(frame, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-	# 	if label == 'tasting beer':
-	# 		logo = Image.open("smoke.png")
-	# 		pil_img = cv2_to_pil(frame)
-	# 		logo = logo.convert("RGBA")
-	# 		logo = logo.resize((250,40))
-	# 		image_copy = pil_img.copy()
-	# 		position = (10,300-10)
-	# 		image_copy.paste(logo, position,logo)
-	# 		image_copy.save("pasted_image.jpg")
- 	
-	# 		frame = cv2.imread("pasted_image.jpg")
-		
-
+	
 		
