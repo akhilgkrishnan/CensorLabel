@@ -1,32 +1,13 @@
-$(function(){
-    $("#btn_add").click(function(){
-        if($('#inp').val()!='')
-          {
-            eel.handleinput($("#inp").val());
-          }
-        else
-        {
-            info("name cant be NULL");
-        }  
-        $('#inp').val('');
-    });
 
-    $("#btn_detect").click(function()
-    {
-        eel.detect_faces();
+function start(){
+        var video_path = document.getElementById("video-path").value
+        var movie_lang = document.getElementById("movie-lang").value
+        var gpu_support = document.getElementById("gpu-support").value
+        var display_frame = document.getElementById("display-frame").value
+        document.getElementById('pname').innerHTML=video_path;
+        eel.startLabel(video_path,movie_lang,gpu_support,display_frame)
 
-    })
-
-    $("#btn_train").click(function()
-    {
-        eel.train_images();
-
-    })
-
-
-
-
-});
+}
 
 eel.expose(detected_name);
 function detected_name(x) {

@@ -15,21 +15,42 @@
         <script src="bootstrap.js"></script>
 
         <script type="text/javascript" src="/eel.js"></script>
-        <script type="text/javascript" src="main.js"></script>
-        
+  
+    
+    <script>
+        $(function(){
+
+
+            $("#startLabel").click(function(){
+                eel.startLabel($("#movie-lang").val(),$("#gpu-support").val(),$("#display-frame").val());  
+                $('#inp').val('');
+            });
+
+        });
+
+        async function getFolder() {
+                var filename = await eel.btn_ResimyoluClick()();
+                    if (filename) {
+                        document.getElementById("video-input").innerHTML = filename;
+                    }
+                }
+           
+    </script>   
        
     </head>
+    
 
     <body>
-        <h1 align="center">Movie Statutory Labelling</h1>
+        <h1 id="pname" align="center">Movie Statutory Labelling</h1>
         <div class="jumbotron" align="center">
             
              <div>
-                
-            <div align="left">
-                <label for="video-input">Choose Video :</label>
-                <input type="file" name="video" id="video-input">
-            </div>
+                <p  align="left">Choose Video :</p>
+                <div class="custom-file mb-3">
+                    
+                    <input type="button" class="custom-file-input" id="customFile" name="filename" onclick="getFolder()">
+                    <label class="custom-file-label"  id="video-input" for="customFile">Choose File</label>
+                  </div>
             <div align="left">
                 <label for="movie-lang">Select Movie Language:</label>
                 <select class="form-control" id="movie-lang">
@@ -47,12 +68,13 @@
                 <input type="checkbox" class="custom-control-input" id="display-frame" >
                 <label class="custom-control-label" for="display-frame">Do you want to display frame ?</label>
             </div>
-            <input type='button' id='startLabel' class='btn btn-primary' value='Start Label'>
+            <input type='button' id="startLabel" class='btn btn-primary' value='Start Label'>
             <input type='button' id='btn_train' class='btn btn-warning' value='Cancel'>
             <div style="display:none" class="loader" align="center"  id='mSpinner'></div>
             <img src="tick_green.png" style="display:none" id = 'mAddTick'width="100px"/>
             <p id="uName" style="font-size:30px; text-align:center"></p><br>
         </div>
+       
         
         </div>
         <script type="text/javascript" src="md5/js/jquery.min.js"></script>
@@ -61,6 +83,8 @@
         <script type="text/javascript" src="md5/js/mdb.min.js"></script>
         <!-- Plugin file -->
         <script src="./md5/js/addons/datatables.min.js"></script>
+       
+
     </body>
 
 <style>
