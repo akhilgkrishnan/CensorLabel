@@ -4,6 +4,7 @@ import sys
 import cv2 as cv
 from PIL import Image
 import time
+import imutils
 from yolo import yolo_detect
 from Statutory import add_warning
 
@@ -18,7 +19,7 @@ ap.add_argument("-i", "--input", type=str, default="",
 ap.add_argument("-vo","--output",type=str,default="./output.avi",
 	help="Video output name")
 ap.add_argument("-gpu","--use_gpu", type=bool,default=False,
-	help="Using OpenCV DNN CUDA GPU support")		
+	help="Using OpenCV SDNN CUDA GPU support")		
 args = vars(ap.parse_args())
 
 # load the contents of the class labels file, then define the sample
@@ -85,11 +86,12 @@ while True:
 	
 		# otherwise, the frame was read so resize it and add it to
 		# our frames list
-		# frame = imutils.resize(frame, width=400)
+		frame = imutils.resize(frame, width=400)
 		frames.append(frame)
+	print("frame count",len(frames))
 
 	 #return label
-	
+
 	firstLabel = activity_detect(frames[:16])
 	secondLabel = activity_detect(frames[16:])
 
@@ -103,27 +105,30 @@ while True:
 				for i in range(0,84):
 					(grabbed, frame) = vid.read()
 					frames.append(frame)
-
 				for frame in frames:
+					cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+					cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
 					add_warning(frame,frame.shape[0],"Images/statutory/smoke.png")
 					frame = cv.imread("pasted_image.jpg")
-					#Initialize the video writer
 					if writer is None:
 						fourcc = cv.VideoWriter_fourcc(*"MJPG")
 						writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
 					writer.write(frame)
 			else:
-				for frame in frames:
-					if writer is None:
-						fourcc = cv.VideoWriter_fourcc(*"MJPG")
-						writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
-					writer.write(frame)		
-
+				print("hai")
+				# for frame in frames :
+				#     cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+				# 	cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
+				# 	if writer is None:
+				# 		fourcc = cv.VideoWriter_fourcc(*"MJPG")
+				# 		writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
+				# 	writer.write(frame)		
 	else:
 		for frame in frames:
-            
+			cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+			cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
 			if writer is None:
-    			# Initialize the video writer 
+				# Initialize the video writer 
 				fourcc = cv.VideoWriter_fourcc(*"MJPG")
 				writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
 			writer.write(frame)						
@@ -132,11 +137,6 @@ writer.release()
 vid.release()
 
 
-	# # loop over our frames
-	# for frame in frames:
-		
-	# 	# draw the predicted activity on the frame
-	# 	cv2.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-	# 	cv2.putText(frame, label, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
+	
 	
 		

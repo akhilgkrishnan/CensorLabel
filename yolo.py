@@ -65,14 +65,17 @@ def yolo_detect(frames,writer,labelh,net,fps):
     #os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(FLAGS.video_path).stem+'-audio.wav')
     height , width =  None, None
     writer = None
-
+    count = 0
     for frame in frames:
-      
-        if width is None or height is None:
-            width = frame.shape[1]
-            height  = frame.shape[0]
-        
-        detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS,labelh)
+        print("frame count :",count)
+        detect = 0
+        if(count%4==0):
+            if width is None or height is None:
+                width = frame.shape[1]
+                height  = frame.shape[0]
+            
+            detect = infer_image(net, layer_names, height, width, frame, colors, labels, FLAGS,labelh)
+        count += 1
         if detect == 0:
             continue
         else:

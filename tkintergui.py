@@ -10,7 +10,7 @@ def selectFile():
     inputFileName =  filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("mp4 files","*.mp4"),("all files","*.*")))
 
 c = Canvas(root, bg="blue", height=300, width=300)
-background_image=PhotoImage(file ='Images/tkbg.png')
+background_image=PhotoImage(file ='Images/design/tkbg.png')
 background_label = Label(root, image=background_image)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 Tops = Frame(root,bg="white",width = 1600,height=50,relief=SUNKEN)
@@ -24,7 +24,7 @@ ButtonFrame.pack()
 
 #Read input video
 fileButton = Button(ButtonFrame,text= "InputVideo",command=selectFile)
-fileEntry = Entry(ButtonFrame)
+fileEntry = Entry(ButtonFrame,padx=10)
 fileEntry.grid(row=0,column=0)
 fileButton.grid(row=0,column=1)
 

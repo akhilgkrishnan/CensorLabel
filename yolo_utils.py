@@ -5,7 +5,7 @@ import subprocess
 import time
 import os
 
-
+riding = ['motorcylist','riding a bike','riding scooter','riding mountain bike']
 #Determine the IOU of two bounding boxes
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
@@ -22,13 +22,13 @@ def bb_intersection_over_union(boxA, boxB):
     
 def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,labelh):
     # If there are any detections
-
+    detect = 0
     if len(idxs) > 0:
         
         print("idxs :",idxs.flatten())
 
         motorcycle = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
-        if (labelh == 'motorcylist' or 'riding a bike'or 'riding scooter' or 'riding mountain bike') and len(motorcycle) > 0:
+        if (labelh in riding) and len(motorcycle) > 0:
             whelmet = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
             helmet = list(filter(lambda x: classids[x] == 2,idxs.flatten()))
             
@@ -72,8 +72,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
              
-        cv.imshow("frame",img)
-        key = cv.waitKey(1) & 0xFF
+        # cv.imshow("frame",img)
+        # key = cv.waitKey(1) & 0xFF
     else:
         return 0
 
@@ -127,7 +127,7 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labe
         end = time.time()
 
         # if FLAGS.show_time:
-        #     print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
+        print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
 
         
         # Generate the boxes, confidences, and classIDs
