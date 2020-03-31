@@ -26,8 +26,9 @@ def btn_ResimyoluClick():
 
 @eel.expose
 def startLabel(movie_lang,gpu_support,display_frame):
-    
+
 	print(video_path,movie_lang,gpu_support,display_frame)
+	eel.mSpinner()
 	# construct the argument parser and parse the arguments
 	ap = argparse.ArgumentParser()
 	ap.add_argument("-m", "--model", type= str,default='./human-activity/resnet-34_kinetics.onnx',
@@ -104,12 +105,12 @@ def startLabel(movie_lang,gpu_support,display_frame):
 			# our frames list
 			frame = imutils.resize(frame, width=400)
 			frames.append(frame)
-		print("frame count",len(frames))
+		
 
 		#return label
-
-		firstLabel = activity_detect(frames[:16])
-		secondLabel = activity_detect(frames[16:])
+		if(len(frames)>31):
+			firstLabel = activity_detect(frames[:16])
+			secondLabel = activity_detect(frames[16:])
 
 		if firstLabel == secondLabel:
 			label = firstLabel
@@ -131,14 +132,14 @@ def startLabel(movie_lang,gpu_support,display_frame):
 							writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
 						writer.write(frame)
 				else:
-					print("hai")
-					# for frame in frames :
-					#     cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-					# 	cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
-					# 	if writer is None:
-					# 		fourcc = cv.VideoWriter_fourcc(*"MJPG")
-					# 		writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
-					# 	writer.write(frame)		
+					
+					for frame in frames :
+					    cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+						cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
+						if writer is None:
+							fourcc = cv.VideoWriter_fourcc(*"MJPG")
+							writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
+						writer.write(frame)		
 		else:
 			for frame in frames:
 				cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
@@ -149,6 +150,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
 					writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
 				writer.write(frame)						
 	print("[INFO] Cleaning up...")
+	eel.mSpinner()
+	eel.mAddTick()
 	writer.release()
 	vid.release()
 

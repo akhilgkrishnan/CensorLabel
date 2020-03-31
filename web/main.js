@@ -9,11 +9,6 @@ function start(){
 
 }
 
-eel.expose(detected_name);
-function detected_name(x) {
-    console.log("Hello from " + x);
-    document.getElementById('uName').innerHTML='Detected person is :'+x;
-
 }
 
 eel.expose(info);
@@ -23,7 +18,7 @@ function info(x) {
 
 eel.expose(mSpinner);       
 function mSpinner() {
-    v   ar x = document.getElementById("mSpinner");
+    var x = document.getElementById("mSpinner");
     if (x.style.display === "block") {
         x.style.display = "none";
 } else {

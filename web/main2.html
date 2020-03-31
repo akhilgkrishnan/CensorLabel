@@ -86,6 +86,33 @@
        
 
     </body>
+<script>
+    eel.expose(info);
+function info(x) {
+        document.getElementById('uName').innerHTML=x;
+    }
+
+eel.expose(mSpinner);       
+function mSpinner() {
+    var x = document.getElementById("mSpinner");
+    if (x.style.display === "block") {
+        x.style.display = "none";
+} else {
+    x.style.display = "block";
+}
+}
+
+eel.expose(mAddTick);
+function mAddTick()
+{
+var x = document.getElementById("mAddTick");
+if (x.style.display === "block") {
+    x.style.display = "none";
+} else {
+    x.style.display = "block";
+}                    }
+
+</script>    
 
 <style>
     .loader {
