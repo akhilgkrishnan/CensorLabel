@@ -137,3 +137,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+./human-activity/resnet-34_kinetics.onnx
