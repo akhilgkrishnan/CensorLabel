@@ -50,25 +50,7 @@ def yolo_detect(frames,writer,labelh,net,fps):
 
     FLAGS, unparsed = parser.parse_known_args()
     
-<<<<<<< HEAD
-    startt = time.time()
-    # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
-    net = cv.dnn.readNetFromDarknet(FLAGS.config, FLAGS.weights)
-    print("sucess")
-   
-    
-    if FLAGS.use_gpu:
-    	# set CUDA as the preferable backend and target
-	    print("[INFO] setting preferable backend and target to CUDA...")
-	    net.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
-	    net.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
 
-<<<<<<< HEAD
-=======
-    
-
->>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
-    # Get the labels
     labels = open(FLAGS.labels).read().strip().split('\n')
 
     
@@ -76,44 +58,11 @@ def yolo_detect(frames,writer,labelh,net,fps):
     # Intializing colors to represent each label uniquely
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
 
-<<<<<<< HEAD
-=======
-   
-
->>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
-=======
-  
-    # Get the labels
-    labels = open(FLAGS.labels).read().strip().split('\n')
-    # Intializing colors to represent each label uniquely
-    colors = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
->>>>>>> gui
     # Get the output layer names of the model
     layer_names = net.getLayerNames()
     
     layer_names = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-<<<<<<< HEAD
-<<<<<<< HEAD
-    
-=======
-    print(layer_names)
->>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
 
-    if FLAGS.video_path:
-        
-        #Extracting the audio file from the video file
-        os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(FLAGS.video_path).stem+'-audio.wav')
-        
-        vid = cv.VideoCapture(FLAGS.video_path)
-        fps = vid.get(cv.CAP_PROP_FPS)
-        fpsint = int(fps)
-        print("FPS is :",fps)
-        height , width =  None, None
-        writer = None
-        frameCount = 0
-=======
-   
->>>>>>> gui
         
     #Extracting the audio file from the video file
     #os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(FLAGS.video_path).stem+'-audio.wav')
