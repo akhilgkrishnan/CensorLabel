@@ -76,17 +76,33 @@ if __name__ == '__main__':
 	    net.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
 	    net.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
 
+<<<<<<< HEAD
+=======
+    
+
+>>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
     # Get the labels
     labels = open(FLAGS.labels).read().strip().split('\n')
+
+    
 
     # Intializing colors to represent each label uniquely
     colors = np.random.randint(0, 255, size=(len(labels), 3), dtype='uint8')
 
+<<<<<<< HEAD
+=======
+   
+
+>>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
     # Get the output layer names of the model
     layer_names = net.getLayerNames()
     
     layer_names = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+<<<<<<< HEAD
     
+=======
+    print(layer_names)
+>>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
 
     if FLAGS.video_path:
         
