@@ -13,7 +13,7 @@ from tkinter import filedialog
 
 eel.init('web') 
 
-global video_path
+video_path = ''
 @eel.expose
 def btn_ResimyoluClick():
 	root = Tk()
@@ -26,7 +26,7 @@ def btn_ResimyoluClick():
 
 @eel.expose
 def startLabel(movie_lang,gpu_support,display_frame):
-
+	global video_path
 	print(video_path,movie_lang,gpu_support,display_frame)
 	eel.mSpinner()
 	# construct the argument parser and parse the arguments
