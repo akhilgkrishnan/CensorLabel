@@ -4,9 +4,10 @@ import cv2 as cv
 import subprocess
 import time
 import os
-from PIL import Image 
+from detect import detectChecking
 
 
+<<<<<<< HEAD
 def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
     return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
 def add_label(img,height,dtype):
@@ -71,6 +72,8 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
     else:
         return img,detect
 >>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
+=======
+>>>>>>> gui
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
@@ -105,7 +108,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
 
     return boxes, confidences, classids
 
-def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,frameCount, 
+def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labelh, 
             boxes=None, confidences=None, classids=None, idxs=None, infer=True):
     
     if infer:
@@ -121,8 +124,8 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         outs = net.forward(layer_names)
         end = time.time()
 
-        if FLAGS.show_time:
-            print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
+        # if FLAGS.show_time:
+        print ("[INFO] YOLOv3 took {:6f} seconds".format(end - start))
 
         
         # Generate the boxes, confidences, and classIDs
@@ -135,6 +138,6 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,fram
         raise '[ERROR] Required variables are set to None before drawing boxes on images.'
         
     # Draw labels and boxes on the image
-    img,detect = draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, labels,height,frameCount)
+    detect = detectChecking(img, boxes, confidences, classids, idxs, colors, labels,height,labelh)
     
-    return img, detect
+    return detect

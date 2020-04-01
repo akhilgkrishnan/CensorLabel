@@ -6,6 +6,7 @@ __pycache__/
 *.mp4
 *.wav
 *.mkv
+*.onnx
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -137,3 +138,4 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+./human-activity/resnet-34_kinetics.onnx
