@@ -51,8 +51,11 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                             
                             print("iou:",iou)
                             if iou < 0.25:
-                                detect = 0 #person weared helmet
-                              
+                                detect = 1 #person weared helmet
+                                break
+                        if detect == 0:
+                            return 1
+                                  
 
                     if len(whelmet) != 0:
                         for j in whelmet:
