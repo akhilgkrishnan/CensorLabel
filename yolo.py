@@ -79,7 +79,8 @@ def yolo_detect(frames,writer,labelh,net,fps):
         if detect == 0:
             continue
         else:
-            return detect            
+            return detect
+                       
     #Binding the audio file to the output.avi file
     #os.system('ffmpeg -i output.avi -i Audio/'+Path(FLAGS.video_path).stem+'-audio.wav -c copy Video/'+Path(FLAGS.video_path).stem+'-Ouput.mkv')
 

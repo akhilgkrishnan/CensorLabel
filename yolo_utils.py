@@ -5,7 +5,8 @@ import subprocess
 import time
 import os
 
-riding = ['motorcylist','riding a bike','riding scooter','riding mountain bike']
+riding = ['motorcycling','riding a bike','riding scooter','riding mountain bike']
+smoking = ['smoking','smoking hookah']
 #Determine the IOU of two bounding boxes
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
@@ -47,35 +48,48 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
                             w, h = boxes[i][2], boxes[i][3]
                             helmetBox = [x,y,w,h]
                             iou = bb_intersection_over_union(motorBox,helmetBox)
+                            
                             print("iou:",iou)
-                            if iou < 0.1:
-                                return 0 #person weared helmet
-                            else:
-                                return 1 #person not weared helmet   
+                            if iou < 0.25:
+                                detect = 0 #person weared helmet
+                              
+
                     if len(whelmet) != 0:
                         for j in whelmet:
                             x, y = boxes[i][0], boxes[i][1]
                             w, h = boxes[i][2], boxes[i][3]
                             whelmetBox = [x,y,w,h]
                             iou = bb_intersection_over_union(motorBox,whelmetBox)
-                            if iou < 0.1:
-                                return 1 #person not weared helmet
+                            print("iou :",iou)
+                            if iou < 0.25:
+                                detect = 1 #person not weared helmet
+                                break
+                return detect               
+        elif labelh in smoking:
+            smoke = list(filter(lambda x: classids[x] == 3,idxs.flatten()))
+            if len(smoke) > 0:
+                detect = 2
+            else:
+                detect = 0
+        else:
+            return detect          
+                                     
                                 
-        for i in idxs.flatten():     
-            x, y = boxes[i][0], boxes[i][1]
-            w, h = boxes[i][2], boxes[i][3]   
-            color = [int(c) for c in colors[classids[i]]]
+        # for i in idxs.flatten():     
+        #     x, y = boxes[i][0], boxes[i][1]
+        #     w, h = boxes[i][2], boxes[i][3]   
+        #     color = [int(c) for c in colors[classids[i]]]
             
-            #Draw the bounding box rectangle and label on the image
-            cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-            text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-            cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        #     #Draw the bounding box rectangle and label on the image
+        #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+        #     text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+        #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
              
         # cv.imshow("frame",img)
         # key = cv.waitKey(1) & 0xFF
     else:
-        return 0
+        return detect
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []

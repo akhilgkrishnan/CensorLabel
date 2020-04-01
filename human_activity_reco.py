@@ -94,7 +94,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
 		# loop over the number of required sample frames
 		for i in range(0, SAMPLE_DURATION):
 			# read a frame from the video stream
-			(grabbed, frame) = vid.read()
+			grabbed, frame = vid.read()
+            
 
 			# if the frame was not grabbed then we've reached the end of
 			# the video stream so exit the script
@@ -120,8 +121,13 @@ def startLabel(movie_lang,gpu_support,display_frame):
 				print("detect is",detect)
 				if detect == 1:
 					for i in range(0,84):
-						(grabbed, frame) = vid.read()
+						grabbed, frame = vid.read()
 						frames.append(frame)
+						if not grabbed:
+							break
+                        
+      
+                        
 					for frame in frames:
 						cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
 						cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
@@ -134,8 +140,9 @@ def startLabel(movie_lang,gpu_support,display_frame):
 				else:
 					
 					for frame in frames :
-					    cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-						cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
+
+					    # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+                        # cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
 						if writer is None:
 							fourcc = cv.VideoWriter_fourcc(*"MJPG")
 							writer = cv.VideoWriter(args["output"], fourcc, fps,(frame.shape[1], frame.shape[0]), True)
@@ -154,8 +161,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
 	eel.mAddTick()
 	writer.release()
 	vid.release()
-
-
-eel.start('main2.html', size=(700, 400))	
+eel.start('main2.html', size=(700, 600))
 	
 		
