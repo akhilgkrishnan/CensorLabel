@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <title>Movie Statutory Labelling</title>
+        <title>Movie Statutory Labeling</title>
         <link rel="stylesheet" href="bootstrap.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
@@ -11,6 +11,7 @@
         <!-- Plugin file -->
         <link rel="stylesheet" href="./md5/css/addons/datatables.min.css">
         <link rel="stylesheet" href="md5/css/style.css">
+        <link rel="stylesheet" href="css/style.css">
         <script src="jquery.js"></script>
         <script src="bootstrap.js"></script>
 
@@ -22,8 +23,8 @@
 
 
             $("#startLabel").click(function(){
-                eel.startLabel($("#movie-lang").val(),$("#gpu-support").val(),$("#display-frame").val());  
-                $('#inp').val('');
+                eel.startLabel($("#movie-lang").val(),$("#gpu-support").is(':checked'),$("#display-frame").is(':checked'));
+
             });
 
         });
@@ -40,8 +41,8 @@
     </head>
     
 
-    <body>
-        <h1 id="pname" align="center">Movie Statutory Labelling</h1>
+    <body background-image="url("tkbg.png")">
+        <h1 id="pname" align="center">Movie Statutory Labeling</h1>
         <div class="jumbotron" align="center">
             
              <div>

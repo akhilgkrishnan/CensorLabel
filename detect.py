@@ -63,15 +63,20 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                             iou = bb_intersection_over_union(motorBox,whelmetBox)
                             print("iou :",iou)
                             if iou < 0.25:
-                                detect = 1 #person not weared helmet
+                                detect = 1
+                                return detect  #person not weared helmet
                                 break
-                return detect               
+                return detect 
+        #Smoking detection                  
         elif labelh in smoking:
             smoke = list(filter(lambda x: classids[x] == 3,idxs.flatten()))
+            print(smoke)
             if len(smoke) > 0:
                 detect = 2
+                return detect
             else:
                 detect = 0
+                return detect
         else:
             return detect          
                                      
