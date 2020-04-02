@@ -70,10 +70,13 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
         #Smoking detection                  
         elif labelh in smoking:
             smoke = list(filter(lambda x: classids[x] == 3,idxs.flatten()))
+            print(smoke)
             if len(smoke) > 0:
                 detect = 2
+                return detect
             else:
                 detect = 0
+                return detect
         else:
             return detect          
                                      

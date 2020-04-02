@@ -11,7 +11,7 @@ from tkinter import *
 from tkinter import filedialog
 
 eel.init('web') 
-
+writer = None
 video_path = ''
 @eel.expose
 def btn_ResimyoluClick():
@@ -46,20 +46,24 @@ def startLabel(movie_lang,gpu_support,display_frame):
     SAMPLE_SIZE = 112
 
     labels = ['smoking','drinking beer','driving car','driving tractor','riding a bike','riding scooter','smoking hookah','riding mountain bike','motorcycling']
-
+    riding = ['motorcycling', 'riding a bike', 'riding scooter', 'riding mountain bike']
+    smoking = ['smoking', 'smoking hookah']
     # load the human activity recognition model
     print("[INFO] loading human activity recognition model...")
     neth = cv.dnn.readNet(args["model"])
     # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
-    nety = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/helmet6000.weights')
+    nethelmet = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/helmet6000.weights')
+    #netsmoking = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/yolosmoking.weights')
+    
+    
 
     if gpu_support:
             print("[INFO] setting preferable backend and target to CUDA...")
             neth.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
             neth.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
             print("[INFO] setting preferable backend and target to CUDA...")
-            nety.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
-            nety.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
+            nethelmet.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
+            nethelmet.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
 
     def activity_detect(frames):
         # now that our frames array is filled we can construct our blob
@@ -77,22 +81,22 @@ def startLabel(movie_lang,gpu_support,display_frame):
         print("Time taken is ",end-start)
         return CLASSES[np.argmax(outputs)]
 
-    def writeFrame(frame):
-        global writer,fps
+    def writeFrame(frame,fps):
+        global writer
         if writer is None:
             # Initialize the video writer
             fourcc = cv.VideoWriter_fourcc(*"MJPG")
             writer = cv.VideoWriter(args["output"], fourcc, fps, (frame.shape[1], frame.shape[0]), True)
         writer.write(frame)
-
+        
     # grab a pointer to the input video stream
     print("[INFO] accessing video stream...")
     vid = cv.VideoCapture(video_path)
-    writer = None
     fps = vid.get(cv.CAP_PROP_FPS)
     print("Fps is :",fps)
     firstLabel = ''
     secondLabel = ''
+  
     # loop until we explicitly break from it
     while True:
         # initialize the batch of frames that will be passed through the
@@ -103,7 +107,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
         for i in range(0, SAMPLE_DURATION):
 
             # read a frame from the video stream
-            grabbed, frame = vid.read()
+            (grabbed, frame) = vid.read()
             
 
             # if the frame was not grabbed then we've reached the end of
@@ -116,50 +120,61 @@ def startLabel(movie_lang,gpu_support,display_frame):
             #frame = imutils.resize(frame, width=400)
             frames.append(frame)
 
-
-        #return label
+        
         if(len(frames)>31):
             firstLabel = activity_detect(frames[:16])
+            
             secondLabel = activity_detect(frames[16:])
+            
         else:
             for frame in frames:
-                writeFrame(frame)
+                writeFrame(frame,fps)
             break
 
-        if firstLabel == secondLabel:
+        if (firstLabel in labels) or (secondLabel in labels):
             label = firstLabel
             print("label is :",label)
+            
             if label in labels:
-                detect = yolo_detect(frames,writer,label,nety,fps)
+                detect = yolo_detect(frames,label,nethelmet)
                 print("detect is",detect)
                 if detect == 1:
                     for i in range(0,84):
-                        grabbed, frame = vid.read()
-                        frames.append(frame)
+                        (grabbed, frame) = vid.read()
                         if not grabbed:
                             break
+                        frames.append(frame)
+                        
                     for frame in frames:
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
                         add_warning(frame,frame.shape[0],"Images/statutory/smoke.png")
                         frame = cv.imread("pasted_image.jpg")
-                        writeFrame(frame)
+                        writeFrame(frame,fps)
                 elif detect == 2:
                     for i in range(0,84):
-                        grabbed, frame = vid.read()
-                        frames.append(frame)
+                        (grabbed, frame) = vid.read()
                         if not grabbed:
                             break
-                    for frame in frames :
+                        frames.append(frame)
+                        
+                    for frame in frames:
                         add_warning(frame,frame.shape[0],"Images/statutory/smoke.png")
+                        frame = cv.imread("pasted_image.jpg")
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
-                        writeFrame(frame)
+                        writeFrame(frame,fps)
+                else:
+                    for frame in frames:
+                        writeFrame(frame,fps) 
+            else:
+                for frame in frames:
+                    writeFrame(frame,fps)                   
         else:
             for frame in frames:
                 # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                 # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-                writeFrame(frame)
+                writeFrame(frame,fps)
     print("Process finished")
     eel.mSpinner()
     eel.mAddTick()

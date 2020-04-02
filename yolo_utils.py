@@ -72,5 +72,5 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labe
         
     # Draw labels and boxes on the image
     detect = detectChecking(img, boxes, confidences, classids, idxs, colors, labels,height,labelh)
-    
+    print("yolo util detect ",detect)
     return detect

@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="937d151b-9916-472e-b7ce-4b07b7e4e936" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/web/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/tkbg.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/detect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/human_activity_reco.py" beforeDir="false" afterPath="$PROJECT_DIR$/human_activity_reco.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/main2.html" beforeDir="false" afterPath="$PROJECT_DIR$/web/main2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pasted_image.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/pasted_image.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yolo.py" beforeDir="false" afterPath="$PROJECT_DIR$/yolo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yolo_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/yolo_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yolov3-coco/coco-labels" beforeDir="false" afterPath="$PROJECT_DIR$/yolov3-coco/coco-labels" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,9 +70,9 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="588" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/67.27.1853.1053@67.27.1853.1053" timestamp="1583690247765" />
-    <state x="649" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1585748554344">
+    <state x="649" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1585812082818">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="649" y="381" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1585748554344" />
+    <state x="649" y="381" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1585812082818" />
   </component>
 </project>
