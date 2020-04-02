@@ -7,7 +7,7 @@ import os
 from detect import detectChecking
 
 
-<<<<<<< HEAD
+
 def cv2_to_pil(img): #Since you want to be able to use Pillow (PIL)
     return Image.fromarray(cv.cvtColor(img, cv.COLOR_BGR2RGB))    
 def add_label(img,height,dtype):
@@ -44,21 +44,6 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             
             #Adding "smoking injurious to health" label to each smoking detected frame
 
-<<<<<<< HEAD
-            # if 0 in classids: #Check the detected item is smoking
-            #     add_label(img,height,'smoke.png')
-            #     labelledImg = cv.imread("pasted_image.jpg")
-            #     detect = 1
-            # elif 1 in classids:
-            #     labelledImg = cv.imread("pasted_image.jpg")
-            #     detect =2
-            # else:
-            #     labelledImg = img
-            # return labelledImg,detect    
-    cv.imshow("frame",img)
-    key = cv.waitKey(1) & 0xFF
-    return img,5
-=======
             if 0 in classids: #Check the detected item is smoking
                 add_label(img,height,'smoke.png')
                 labelledImg = cv.imread("pasted_image.jpg")
@@ -71,9 +56,7 @@ def draw_labels_and_boxes(img, boxes, confidences, classids, idxs, colors, label
             return labelledImg,detect    
     else:
         return img,detect
->>>>>>> af60cff2a176e04ad0fa3d313ea08cd395870b98
-=======
->>>>>>> gui
+
 
 def generate_boxes_confidences_classids(outs, height, width, tconf):
     boxes = []
