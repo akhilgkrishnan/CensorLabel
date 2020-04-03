@@ -9,6 +9,8 @@ from Statutory import add_warning
 import eel
 from tkinter import * 
 from tkinter import filedialog
+from pathlib import Path
+import os
 
 eel.init('web') 
 writer = None
@@ -19,7 +21,7 @@ def btn_ResimyoluClick():
     root.withdraw()
     root.wm_attributes('-topmost', 1)
     global video_path
-    video_path = filedialog.askopenfilename()
+    video_path = filedialog.askopenfilename(filetypes = (("mp4 files","*.mp4"),("mpv files","*.mpv"),("all files","*.*")))
     print(video_path)
     return video_path
 
@@ -32,6 +34,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
     global video_path
     if video_path == '':
         eel.info("select video path")
+    os.system('ffmpeg -i '+video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(video_path).stem+'-audio.wav')
     print(video_path,movie_lang,gpu_support,display_frame)
     eel.mSpinner()
     # construct the argument parser and parse the arguments
@@ -51,9 +54,11 @@ def startLabel(movie_lang,gpu_support,display_frame):
     SAMPLE_DURATION = 32
     SAMPLE_SIZE = 112
 
-    labels = ['smoking','drinking beer','driving car','driving tractor','riding a bike','riding scooter','smoking hookah','riding mountain bike','motorcycling']
+    labels = ['tasting beer','smoking','drinking beer','driving car','driving tractor','riding a bike','riding scooter','smoking hookah','riding mountain bike','motorcycling']
     riding = ['motorcycling', 'riding a bike', 'riding scooter', 'riding mountain bike']
     smoking = ['smoking', 'smoking hookah']
+    alcohol = ['tasting beer','drinking beer']
+    driving = ['driving car','driving tractor']
     # load the human activity recognition model
     print("[INFO] loading human activity recognition model...")
     neth = cv.dnn.readNet(args["model"])
@@ -102,6 +107,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
     print("Fps is :",fps)
     firstLabel = ''
     secondLabel = ''
+    thirdLabel = ''
   
     # loop until we explicitly break from it
     while True:
@@ -131,17 +137,19 @@ def startLabel(movie_lang,gpu_support,display_frame):
             firstLabel = activity_detect(frames[:16])
             
             secondLabel = activity_detect(frames[16:])
-            
+            print("label is :",firstLabel)
+            print("second label:",secondLabel)
         else:
             for frame in frames:
                 writeFrame(frame,fps)
             break
-
-        if (firstLabel in labels) or (secondLabel in labels):
+        
+        if (firstLabel == secondLabel) or (firstLabel == thirdLabel) or (firstLabel in alcohol) or (secondLabel in alcohol):
+            thirdLabel = secondLabel
             label = firstLabel
-            print("label is :",label)
             
-            if label in labels:
+            
+            if (label in riding) or (label in smoking):
                 detect = yolo_detect(frames,label,nethelmet)
                 print("detect is",detect)
                 if detect == 1:
@@ -154,7 +162,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                     for frame in frames:
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-                        frame = add_warning(frame,"Images/statutory/smoke.png",scale=0.7,y=-120,x=20)
+                        frame = add_warning(frame,'Images/statutory/'+movie_lang+'smoke.png',scale=0.7,y=-120,x=20)
                         if display_frame:
                             cv.imshow("Statutory Labeling", frame)
                             key = cv.waitKey(1) & 0xFF
@@ -168,7 +176,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                         frames.append(frame)
                         
                     for frame in frames:
-                        add_warning(frame,frame.shape[0],"Images/statutory/smoke.png")
+                        add_warning(frame,'Images/statutory/'+movie_lang+'smoke.png',scale=0.7,y=-120,x=20)
                         frame = cv.imread("pasted_image.jpg")
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
@@ -181,7 +189,21 @@ def startLabel(movie_lang,gpu_support,display_frame):
                         if display_frame:
                             cv.imshow("Statutory Labeling", frame)
                             key = cv.waitKey(1) & 0xFF
-                        writeFrame(frame,fps) 
+                        writeFrame(frame,fps)
+            elif label in alcohol:
+                for i in range(0,84):
+                    (grabbed, frame) = vid.read()
+                    if not grabbed:
+                        break
+                    frames.append(frame)
+                for frame in frames:
+                    # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+                    # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
+                    frame = add_warning(frame,'Images/statutory/'+movie_lang+'smoke.png',scale=0.7,y=-120,x=20)
+                    if display_frame:
+                        cv.imshow("Statutory Labeling", frame)
+                        key = cv.waitKey(1) & 0xFF    
+                    writeFrame(frame,fps)        
             else:
                 for frame in frames:
                     if display_frame:
@@ -201,6 +223,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
     eel.mAddTick()
     writer.release()
     vid.release()
+    eel.info('Output file is saved to: Video/'+Path(video_path).stem+'-Ouput.mkv')
+    os.system('ffmpeg -i output.avi -i Audio/'+Path(video_path).stem+'-audio.wav -c copy Video/'+Path(video_path).stem+'-Ouput.mkv')
 eel.start('main2.html', size=(800, 600))
 
 
