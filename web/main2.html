@@ -23,11 +23,21 @@
 
 
             $("#startLabel").click(function(){
-                eel.startLabel($("#movie-lang").val(),$("#gpu-support").is(':checked'),$("#display-frame").is(':checked'));
+                if($('#movie-lang').val() != '' && $('#movie-lang').val() != null )
+                    
+                    {eel.startLabel($("#movie-lang").val(),$("#gpu-support").is(':checked'),$("#display-frame").is(':checked'));
+                }
+                else{
+                    info("Select input video path");
+                }
+            });
+            $("#cancel").click(function(){
+                eel.cancel();
 
             });
 
         });
+       
 
         async function getFolder() {
                 var filename = await eel.btn_ResimyoluClick()();
@@ -70,7 +80,7 @@
                 <label class="custom-control-label" for="display-frame">Do you want to display frame ?</label>
             </div>
             <input type='button' id="startLabel" class='btn btn-primary' value='Start Label'>
-            <input type='button' id='btn_train' class='btn btn-warning' value='Cancel'>
+            <input type='button' id="cancel" class='btn btn-warning' value='Cancel'>
             <div style="display:none" class="loader" align="center"  id='mSpinner'></div>
             <img src="tick_green.png" style="display:none" id = 'mAddTick'width="100px"/>
             <p id="uName" style="font-size:30px; text-align:center"></p><br>

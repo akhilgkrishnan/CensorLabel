@@ -24,8 +24,14 @@ def btn_ResimyoluClick():
     return video_path
 
 @eel.expose
+def cancel():
+    sys.exit(0)
+
+@eel.expose
 def startLabel(movie_lang,gpu_support,display_frame):
     global video_path
+    if video_path == '':
+        eel.info("select video path")
     print(video_path,movie_lang,gpu_support,display_frame)
     eel.mSpinner()
     # construct the argument parser and parse the arguments
@@ -148,8 +154,11 @@ def startLabel(movie_lang,gpu_support,display_frame):
                     for frame in frames:
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-                        add_warning(frame,frame.shape[0],"Images/statutory/smoke.png")
-                        frame = cv.imread("pasted_image.jpg")
+                        frame = add_warning(frame,"Images/statutory/smoke.png",scale=0.7,y=-120,x=20)
+                        if display_frame:
+                            cv.imshow("Statutory Labeling", frame)
+                            key = cv.waitKey(1) & 0xFF
+                            
                         writeFrame(frame,fps)
                 elif detect == 2:
                     for i in range(0,84):
@@ -163,24 +172,35 @@ def startLabel(movie_lang,gpu_support,display_frame):
                         frame = cv.imread("pasted_image.jpg")
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
+                        if display_frame:
+                            cv.imshow("Statutory Labeling", frame)
+                            key = cv.waitKey(1) & 0xFF
                         writeFrame(frame,fps)
                 else:
                     for frame in frames:
+                        if display_frame:
+                            cv.imshow("Statutory Labeling", frame)
+                            key = cv.waitKey(1) & 0xFF
                         writeFrame(frame,fps) 
             else:
                 for frame in frames:
+                    if display_frame:
+                        cv.imshow("Statutory Labeling", frame)
+                        key = cv.waitKey(1) & 0xFF
                     writeFrame(frame,fps)                   
         else:
             for frame in frames:
                 # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                 # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
+                if display_frame:
+                    cv.imshow("Statutory Labeling", frame)
+                    key = cv.waitKey(1) & 0xFF
                 writeFrame(frame,fps)
     print("Process finished")
     eel.mSpinner()
     eel.mAddTick()
     writer.release()
     vid.release()
-    sys.exit(0)
-eel.start('main2.html', size=(700, 600))
+eel.start('main2.html', size=(800, 600))
 
 
