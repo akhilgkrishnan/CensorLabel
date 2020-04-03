@@ -1,6 +1,7 @@
 import cv2 as cv2
 import numpy as np
 def add_warning(image,logo,alpha=0.3,x=0, y=0, scale=1.0):
+    print(logo)
     logo = cv2.imread(logo, cv2.IMREAD_UNCHANGED)
     h, w = image.shape[:2]
     image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
