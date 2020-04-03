@@ -77,7 +77,44 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
             else:
                 detect = 0
                 return detect
-        else:
+        elif labelh in driving:
+            inside_car = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
+            woutseatbelt = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
+            wseatbelt = list(filter(lambda x: classids[x] == 2,idxs.flatten()))
+            if len(inside_car) != 0:
+                for i in inside_car:
+                    x, y = boxes[i][0], boxes[i][1]
+                    w, h = boxes[i][2], boxes[i][3]
+                    carBox = [x,y,w,h]
+                    if len(wseatbelt) != 0:
+                        for j in wseatbelt:
+                            x, y = boxes[i][0], boxes[i][1]
+                            w, h = boxes[i][2], boxes[i][3]
+                            helmetBox = [x,y,w,h]
+                            iou = bb_intersection_over_union(motorBox,helmetBox)
+                            
+                            print("iou:",iou)
+                            if iou < 0.25:
+                                detect = True #person weared helmet
+                                break
+                        if detect: #if person not weared helmet return 1 for adding 
+                            detect = 0
+                        else:
+                            detect = 1    
+                                  
+                    #if any without helmet class detects
+                    if len(whelmet) != 0:
+                        for j in whelmet:
+                            x, y = boxes[i][0], boxes[i][1]
+                            w, h = boxes[i][2], boxes[i][3]
+                            whelmetBox = [x,y,w,h]
+                            iou = bb_intersection_over_union(motorBox,whelmetBox)
+                            print("iou :",iou)
+                            if iou < 0.25:
+                                detect = 1
+                                return detect  #person not weared helmet
+                                break
+                
             return detect          
                                      
                                 
