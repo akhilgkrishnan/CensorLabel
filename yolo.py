@@ -12,24 +12,7 @@ def yolo_detect(frames,labelh,net):
     
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--weights',
-                        type=str,
-                        default='./yolov3-coco/helmet6000.weights',
-                        help='Path to the file which contains the weights for YOLOv3.')
-
-    parser.add_argument('-cfg', '--config',
-                        type=str,
-                        default='./yolov3-coco/yolov3-custom.cfg',
-                        help='Path to the configuration file for the YOLOv3 model.')
-
-    parser.add_argument('-v', '--video-path',
-                        type=str,
-                        help='The path to the video file')
-
-    parser.add_argument('-vo', '--video-output-path',
-                        type=str,
-                        default='./output.avi',
-                        help='The path of the output video file')
+    
 
     parser.add_argument('-l', '--labels',
                         type=str,

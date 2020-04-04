@@ -167,7 +167,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                         for frame in frames:
                             # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                             # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-                            frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smoke.png',scale=0.7,y=-120,x=20)
+                            frame = add_warning(frame,'Images/statutory/'+movie_lang+'/helmet.png',scale=0.7,y=-120,x=20)
                             if display_frame:
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
@@ -204,11 +204,25 @@ def startLabel(movie_lang,gpu_support,display_frame):
                     for frame in frames:
                         # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                         # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-                        frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smoke.png',scale=0.7,y=-120,x=20)
+                        frame = add_warning(frame,'Images/statutory/'+movie_lang+'/alcohol.png',scale=0.7,y=-120,x=20)
                         if display_frame:
                             cv.imshow("Statutory Labeling", frame)
                             key = cv.waitKey(1) & 0xFF    
-                        writeFrame(frame,fps)        
+                        writeFrame(frame,fps)
+                elif label in driving:
+                    for i in range(0,84):
+                        (grabbed, frame) = vid.read()
+                        if not grabbed:
+                            break
+                        frames.append(frame)
+                    for frame in frames:
+                        # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
+                        # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
+                        frame = add_warning(frame,'Images/statutory/'+movie_lang+'/alcohol.png',scale=0.7,y=-120,x=20)
+                        if display_frame:
+                            cv.imshow("Statutory Labeling", frame)
+                            key = cv.waitKey(1) & 0xFF    
+                        writeFrame(frame,fps)                 
                 else:
                     for frame in frames:
                         if display_frame:

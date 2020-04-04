@@ -88,10 +88,10 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                     carBox = [x,y,w,h]
                     if len(wseatbelt) != 0:
                         for j in wseatbelt:
-                            x, y = boxes[i][0], boxes[i][1]
-                            w, h = boxes[i][2], boxes[i][3]
-                            helmetBox = [x,y,w,h]
-                            iou = bb_intersection_over_union(motorBox,helmetBox)
+                            x, y = boxes[j][0], boxes[j][1]
+                            w, h = boxes[j][2], boxes[j][3]
+                            seatbeltBox = [x,y,w,h]
+                            iou = bb_intersection_over_union(carBox,seatbeltBox)
                             
                             print("iou:",iou)
                             if iou < 0.25:
@@ -104,11 +104,11 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                                   
                     #if any without helmet class detects
                     if len(whelmet) != 0:
-                        for j in whelmet:
-                            x, y = boxes[i][0], boxes[i][1]
-                            w, h = boxes[i][2], boxes[i][3]
-                            whelmetBox = [x,y,w,h]
-                            iou = bb_intersection_over_union(motorBox,whelmetBox)
+                        for j in woutseatbelt:
+                            x, y = boxes[j][0], boxes[j][1]
+                            w, h = boxes[j][2], boxes[j][3]
+                            wseatbeltBox = [x,y,w,h]
+                            iou = bb_intersection_over_union(carBox,wseatbeltBox)
                             print("iou :",iou)
                             if iou < 0.25:
                                 detect = 1
