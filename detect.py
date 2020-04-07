@@ -3,6 +3,8 @@ import cv2 as cv
 
 riding = ['motorcycling','riding a bike','riding scooter','riding mountain bike']
 smoking = ['smoking','smoking hookah']
+driving = ['driving car','driving tractor']
+alcohol = ['tasting beer','drinking beer']
 #Determine the IOU of two bounding boxes
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
@@ -57,18 +59,18 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                     #if any without helmet class detects
                     if len(whelmet) != 0:
                         for j in whelmet:
-                            x, y = boxes[j][0], boxes[j][1]
-                            w, h = boxes[j][2], boxes[j][3]
+                            x, y = boxes[i][0], boxes[i][1]
+                            w, h = boxes[i][2], boxes[i][3]
                             whelmetBox = [x,y,w,h]
                             iou = bb_intersection_over_union(motorBox,whelmetBox)
                             print("iou :",iou)
-                            if iou < 0.25:
+                            if iou < 0.35:
                                 detect = 1
                                 return detect  #person not weared helmet
                                 break
                 return detect 
         #Smoking detection                  
-        elif labelh in smoking:
+        elif labelh in smoking or alcohol:
             smoke = list(filter(lambda x: classids[x] == 3,idxs.flatten()))
             print(smoke)
             if len(smoke) > 0:
@@ -100,10 +102,10 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                         if detect: #if person not weared helmet return 1 for adding 
                             detect = 0
                         else:
-                            detect = 1    
+                            detect = 3    
                                   
                     #if any without helmet class detects
-                    if len(whelmet) != 0:
+                    if len(woutseatbelt) != 0:
                         for j in woutseatbelt:
                             x, y = boxes[j][0], boxes[j][1]
                             w, h = boxes[j][2], boxes[j][3]
@@ -111,7 +113,7 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                             iou = bb_intersection_over_union(carBox,wseatbeltBox)
                             print("iou :",iou)
                             if iou < 0.25:
-                                detect = 1
+                                detect = 3
                                 return detect  #person not weared helmet
                                 break
                 
