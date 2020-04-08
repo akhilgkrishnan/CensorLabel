@@ -52,7 +52,7 @@ def yolo_detect(frames,labelh,net):
     for frame in frames:
         print("frame count :",count)
         detect = 0
-        if(count%4==0):
+        if(count%2==0):
             if width is None or height is None:
                 width = frame.shape[1]
                 height  = frame.shape[0]

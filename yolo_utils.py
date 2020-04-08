@@ -24,7 +24,7 @@ def generate_boxes_confidences_classids(outs, height, width, tconf):
             confidence = scores[classid]
             
             # Consider only the predictions that are above a certain confidence level
-            if confidence > 0.3:
+            if confidence > 0.25:
                 # TODO Check detection
                 box = detection[0:4] * np.array([width, height, width, height])
                 centerX, centerY, bwidth, bheight = box.astype('int')
@@ -46,7 +46,7 @@ def infer_image(net, layer_names, height, width, img, colors, labels, FLAGS,labe
     
     if infer:
         # Contructing a blob from the input image
-        blob = cv.dnn.blobFromImage(img, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+        blob = cv.dnn.blobFromImage(img, 1 / 255.0, (832, 832), swapRB=True, crop=False)
                        
 
         # Perform a forward pass of the YOLO object detector

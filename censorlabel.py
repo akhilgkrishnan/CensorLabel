@@ -92,10 +92,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
             # pass the blob through the network to obtain our human activity
             # recognition predictions
             neth.setInput(blob)
-            start = time.time()
             outputs = neth.forward()
-            end = time.time()
-            print("Time taken is ",end-start)
             return CLASSES[np.argmax(outputs)]
 
         def writeFrame(frame,fps):
@@ -127,7 +124,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
                 # read a frame from the video stream
                 (grabbed, frame) = vid.read()
                 
-
                 # if the frame was not grabbed then we've reached the end of
                 # the video stream so exit the script
                 if not grabbed:
@@ -137,7 +133,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
                 # our frames list
                 #frame = imutils.resize(frame, width=400)
                 frames.append(frame)
-
             
             if(len(frames)>31):
                 firstLabel = activity_detect(frames[:16])
@@ -155,8 +150,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
                 thirdLabel = secondLabel
                 print(thirdLabel)
                 label = firstLabel
-                
-                
                 if (label in riding):
                     detect = yolo_detect(frames,label,nethelmet)
                     if detect == 1:
@@ -181,16 +174,16 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)        
-                elif (label in smoking):
+                elif (firstLabel in smoking and secondLabel in smoking):
                     detect = yolo_detect(frames,label,netsmoking)
-                    print("detect is",detect)            
+                    print("detect is :",detect)            
                     if detect == 2:
                         eel.info("Smoking detected")
-                        for i in range(0,84):
-                            (grabbed, frame) = vid.read()
-                            if not grabbed:
-                                break
-                            frames.append(frame)
+                        # for i in range(0,84):
+                        #     (grabbed, frame) = vid.read()
+                        #     if not grabbed:
+                        #         break
+                        #     frames.append(frame)
                             
                         for frame in frames:
                             frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smoke.png')
@@ -207,34 +200,38 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)
-                elif label in alcohol or thirdLabel in smoking:
+                elif label in alcohol or (thirdLabel in smoking) or (label in smoking):
                     detect = yolo_detect(frames,label,netsmoking)
+                    for i in range(0,84):
+                        (grabbed, frame) = vid.read()
+                        if not grabbed:
+                            break
+                        frames.append(frame)
                     if detect == 2:
-                        print("smoking detected")
-                    eel.info("alcohol detected")
-                    # for i in range(0,84):
-                    #     (grabbed, frame) = vid.read()
-                    #     if not grabbed:
-                    #         break
-                    #     frames.append(frame)
-                    for frame in frames:
-                        # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-                        # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
-                        frame = add_warning(frame,'Images/statutory/'+movie_lang+'/alcohol.png')
-                        if display_frame:
-                            cv.imshow("Statutory Labeling", frame)
-                            key = cv.waitKey(1) & 0xFF    
-                        writeFrame(frame,fps)
+                        eel.info("alcohol & smoking detected")
+                        for frame in frames:
+                            frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smokealcohol.png')
+                            if display_frame:
+                                cv.imshow("Statutory Labeling", frame)
+                                key = cv.waitKey(1) & 0xFF    
+                            writeFrame(frame,fps)
+                    else:        
+                        for frame in frames:
+                            frame = add_warning(frame,'Images/statutory/'+movie_lang+'/alcohol.png')
+                            if display_frame:
+                                cv.imshow("Statutory Labeling", frame)
+                                key = cv.waitKey(1) & 0xFF    
+                            writeFrame(frame,fps)
                 elif label in driving:
                     detect = yolo_detect(frames,label,netseatbelt)
                     print("detect is",detect)
                     if detect == 3:
                         eel.info("driving without seatbelt detection")
-                        # for i in range(0,84):
-                        #     (grabbed, frame) = vid.read()
-                        #     if not grabbed:
-                        #         break
-                        #     frames.append(frame)
+                        for i in range(0,84):
+                            (grabbed, frame) = vid.read()
+                            if not grabbed:
+                                break
+                            frames.append(frame)
                         for frame in frames:
                             # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
                             # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
