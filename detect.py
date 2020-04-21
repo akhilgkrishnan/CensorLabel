@@ -73,12 +73,26 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
         elif labelh in smoking or alcohol:
             smoke = list(filter(lambda x: classids[x] == 3,idxs.flatten()))
             print(smoke)
+            # for i in idxs.flatten():     
+            #     x, y = boxes[i][0], boxes[i][1]
+            #     w, h = boxes[i][2], boxes[i][3]   
+            #     color = [int(c) for c in colors[classids[i]]]
+                
+            #     #Draw the bounding box rectangle and label on the image
+            #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
+            #     text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
+            #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+
+             
+            # cv.imwrite("frame.jpg",img)
+            #key = cv.waitKey(0) & 0xFF
             if len(smoke) > 0:
                 detect = 2
                 return detect
             else:
                 detect = 0
                 return detect
+            
         elif labelh in driving:
             inside_car = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
             woutseatbelt = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
@@ -119,19 +133,8 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                 
             return detect          
                                      
-                                
-        # for i in idxs.flatten():     
-        #     x, y = boxes[i][0], boxes[i][1]
-        #     w, h = boxes[i][2], boxes[i][3]   
-        #     color = [int(c) for c in colors[classids[i]]]
-            
-        #     #Draw the bounding box rectangle and label on the image
-        #     cv.rectangle(img, (x, y), (x+w, y+h), color, 2)
-        #     text = "{}: {:4f}".format(labels[classids[i]], confidences[i])
-        #     cv.putText(img, text, (x, y-5), cv.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
              
-        # cv.imshow("frame",img)
-        # key = cv.waitKey(1) & 0xFF
+        cv.imshow("frame",img)
+        key = cv.waitKey(1) & 0xFF
     else:
         return detect

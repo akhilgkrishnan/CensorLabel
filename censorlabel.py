@@ -174,7 +174,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)        
-                elif (firstLabel in smoking and secondLabel in smoking):
+                elif (firstLabel in smoking) and (secondLabel in smoking):
                     detect = yolo_detect(frames,label,netsmoking)
                     print("detect is :",detect)            
                     if detect == 2:
@@ -274,6 +274,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
         os.system('ffmpeg -i output.avi -i Audio/'+Path(video_path).stem+'-audio.wav -c copy Video/'+Path(video_path).stem+'-Ouput.mkv')
         print('Output file is saved to: Video/'+Path(video_path).stem+'-Ouput.mkv')
         print("Process finished")
+        os.system('rm Audio/'+Path(video_path).stem+'-audio.wav')
     except:
         print("An error occured")
         eel.mSpinner()
