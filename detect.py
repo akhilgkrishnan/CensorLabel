@@ -16,14 +16,11 @@ def bb_intersection_over_union(boxA, boxB):
     unionArea = (boxA[2]*boxA[3])+(boxB[2]*boxB[3])-intersectionArea;
     overlapArea = intersectionArea/unionArea;
     return overlapArea    
- 
-    
     
 def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,height,labelh):
     # If there are any detections
     detect = 0
     if len(idxs) > 0:
-        
         print("idxs :",idxs.flatten())
 
         motorcycle = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
@@ -93,6 +90,7 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                 detect = 0
                 return detect
             
+        #Seat belt detection    
         elif labelh in driving:
             inside_car = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
             woutseatbelt = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
@@ -132,8 +130,7 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                                 break
                 
             return detect          
-                                     
-             
+
         cv.imshow("frame",img)
         key = cv.waitKey(1) & 0xFF
     else:

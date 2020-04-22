@@ -9,11 +9,8 @@ from pathlib import Path
 FLAGS = []
 
 def yolo_detect(frames,labelh,net):
-    
-    
     parser = argparse.ArgumentParser()
     
-
     parser.add_argument('-l', '--labels',
                         type=str,
                         default='./yolov3-coco/coco-labels',
@@ -43,9 +40,6 @@ def yolo_detect(frames,labelh,net):
     
     layer_names = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
    
-        
-    #Extracting the audio file from the video file
-    #os.system('ffmpeg -i '+FLAGS.video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(FLAGS.video_path).stem+'-audio.wav')
     height , width =  None, None
     writer = None
     count = 0
@@ -64,7 +58,6 @@ def yolo_detect(frames,labelh,net):
         else:
             return detect
     return detect
-    #Binding the audio file to the output.avi file
-    #os.system('ffmpeg -i output.avi -i Audio/'+Path(FLAGS.video_path).stem+'-audio.wav -c copy Video/'+Path(FLAGS.video_path).stem+'-Ouput.mkv')
+    
 
  

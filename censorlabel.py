@@ -179,11 +179,11 @@ def startLabel(movie_lang,gpu_support,display_frame):
                     print("detect is :",detect)            
                     if detect == 2:
                         eel.info("Smoking detected")
-                        # for i in range(0,84):
-                        #     (grabbed, frame) = vid.read()
-                        #     if not grabbed:
-                        #         break
-                        #     frames.append(frame)
+                        for i in range(0,84):
+                            (grabbed, frame) = vid.read()
+                            if not grabbed:
+                                break
+                            frames.append(frame)
                             
                         for frame in frames:
                             frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smoke.png')
@@ -200,7 +200,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)
-                elif label in alcohol or (thirdLabel in smoking) or (label in smoking):
+                elif label in alcohol:
                     detect = yolo_detect(frames,label,netsmoking)
                     for i in range(0,84):
                         (grabbed, frame) = vid.read()
