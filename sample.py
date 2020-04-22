@@ -1,4 +1,3 @@
-
 def bb_intersection_over_union(boxA, boxB):
     	# determine the (x, y)-coordinates of the intersection rectangle
 	xA = max(boxA[0], boxB[0])
