@@ -71,8 +71,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
         nethelmet = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/helmet6000.weights')
         netsmoking = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/yolosmoking.weights')
         netseatbelt = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom1.cfg', './yolov3-coco/yoloseatbelt.weights')
-        
-        
 
         if gpu_support:
                 print("[INFO] setting preferable backend and target to CUDA...")
@@ -117,18 +115,14 @@ def startLabel(movie_lang,gpu_support,display_frame):
             # initialize the batch of frames that will be passed through the
             # model
             frames = []
-
             # loop over the number of required sample frames
             for i in range(0, SAMPLE_DURATION):
-
                 # read a frame from the video stream
                 (grabbed, frame) = vid.read()
-                
                 # if the frame was not grabbed then we've reached the end of
                 # the video stream so exit the script
                 if not grabbed:
                     break
-
                 # otherwise, the frame was read so resize it and add it to
                 # our frames list
                 #frame = imutils.resize(frame, width=400)
@@ -136,7 +130,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
             
             if(len(frames)>31):
                 firstLabel = activity_detect(frames[:16])
-                
                 secondLabel = activity_detect(frames[16:])
                 print(firstLabel)
                 print(secondLabel)
@@ -158,11 +151,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
                             (grabbed, frame) = vid.read()
                             if not grabbed:
                                 break
-                            frames.append(frame)
-                            
+                            frames.append(frame) 
                         for frame in frames:
-                            # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-                            # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
                             frame = add_warning(frame,'Images/statutory/'+movie_lang+'/helmet.png')
                             if display_frame:
                                 cv.imshow("Statutory Labeling", frame)
@@ -184,12 +174,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
                             if not grabbed:
                                 break
                             frames.append(frame)
-                            
                         for frame in frames:
                             frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smoke.png')
-                            
-                            # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-                            # cv.putText(frame, firstlabel, (10, 25), cv2.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)	
                             if display_frame:
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
@@ -233,8 +219,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 break
                             frames.append(frame)
                         for frame in frames:
-                            # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-                            # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
                             frame = add_warning(frame,'Images/statutory/'+movie_lang+'/seatbelt.png')
                             if display_frame:
                                 cv.imshow("Statutory Labeling", frame)
@@ -254,8 +238,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
                         writeFrame(frame,fps)                   
             else:
                 for frame in frames:
-                    # cv.rectangle(frame, (0, 0), (300, 40), (0, 0, 0), -1)
-                    # cv.putText(frame, firstLabel, (10, 25), cv.FONT_HERSHEY_SIMPLEX,0.8, (255, 255, 255), 2)
                     if display_frame:
                         cv.imshow("Statutory Labeling", frame)
                         key = cv.waitKey(1) & 0xFF
@@ -265,7 +247,6 @@ def startLabel(movie_lang,gpu_support,display_frame):
         if video_path != '':
             eel.mAddTick()
          
-        
         writer.release()
         vid.release()
         if display_frame:

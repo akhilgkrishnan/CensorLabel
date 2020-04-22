@@ -27,7 +27,6 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
         if (labelh in riding) and len(motorcycle) > 0:
             whelmet = list(filter(lambda x: classids[x] == 1,idxs.flatten()))
             helmet = list(filter(lambda x: classids[x] == 2,idxs.flatten()))
-            
             print("Motorcycle :",motorcycle)
             print("helmet :",helmet)
             print("whelmet :",whelmet)
