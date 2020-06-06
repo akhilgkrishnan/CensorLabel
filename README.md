@@ -10,4 +10,4 @@ This system is used for smoking detection, Check whether the motorcyclist weared
 
 ## Support
 
-Open for contributing to this project. Ping me on linkedin https://linked.com/in/akhilgkrishnan
+Open for contributing to this project. Ping me on linkedin https://linkedin.com/in/akhilgkrishnan
