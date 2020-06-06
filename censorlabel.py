@@ -69,8 +69,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
         print("[INFO] loading human activity recognition model...")
         neth = cv.dnn.readNet(args["model"])
         # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
-        nethelmet = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/helmet6000.weights')
-        netsmoking = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom.cfg', './yolov3-coco/yolosmoking.weights')
+        nethelmet = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-helmet.cfg', './yolov3-coco/helmet6000.weights')
+        netsmoking = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-smoking.cfg', './yolov3-coco/yolosmoking.weights')
         netseatbelt = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom1.cfg', './yolov3-coco/yoloseatbelt.weights')
 
         if gpu_support:
@@ -93,11 +93,11 @@ def startLabel(movie_lang,gpu_support,display_frame):
             neth.setInput(blob)
             outputs = neth.forward()
             z = outputs.argsort()[-5:][0][-5:]
-            j = [CLASSES[x] for x in z]
-            print(j)
+            activityList = [CLASSES[x] for x in z]
+            print(activityList)
             print(np.argmax(outputs))
-            return CLASSES[np.argmax(outputs)]
-
+            return CLASSES[np.argmax(outputs)],activityList
+            
         def writeFrame(frame,fps):
             global writer
             if writer is None:
@@ -111,8 +111,11 @@ def startLabel(movie_lang,gpu_support,display_frame):
                 if display_frame:
                     cv.imshow("Statutory Labeling", frame)
                     key = cv.waitKey(1) & 0xFF
-                writeFrame(frame,fps)   
-                
+                writeFrame(frame,fps)  
+                 
+        def checkActivity(list1,list2):
+            check =  any(item in list1 for item in list2)  
+            return check      
                 
         # grab a pointer to the input video stream
         print("[INFO] accessing video stream...")
@@ -142,8 +145,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
                 frames.append(frame)
             
             if(len(frames)>31):
-                firstLabel = activity_detect(frames[:16])
-                secondLabel = activity_detect(frames[16:])
+                firstLabel, activityList1 = activity_detect(frames[:16])
+                secondLabel, activityList2 = activity_detect(frames[16:])
                 print(firstLabel)
                 print(secondLabel)
                 
@@ -152,7 +155,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                     writeFrame(frame,fps)
                 break
             
-            if (firstLabel == secondLabel) or (firstLabel == thirdLabel) or (firstLabel in alcohol) or (secondLabel in alcohol) or (firstLabel in smoking) or (secondLabel in smoking):
+            if (checkActivity(labels,activityList1) and checkActivity(labels,activityList2)) or (firstLabel == secondLabel) or (firstLabel == thirdLabel) or (firstLabel in alcohol) or (secondLabel in alcohol) or (firstLabel in smoking) or (secondLabel in smoking):
                 thirdLabel = secondLabel
                 print(thirdLabel)
                 label = firstLabel
