@@ -91,6 +91,10 @@ def startLabel(movie_lang,gpu_support,display_frame):
             # recognition predictions
             neth.setInput(blob)
             outputs = neth.forward()
+            z = outputs.argsort()[-5:][0][-5:]
+            j = [CLASSES[x] for x in z]
+            print(j)
+            print(np.argmax(outputs))
             return CLASSES[np.argmax(outputs)]
 
         def writeFrame(frame,fps):
@@ -164,7 +168,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 cv.imshow("Statutory Labeling", frame)
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)        
-                elif (firstLabel in smoking) and (secondLabel in smoking):
+                elif (firstLabel in smoking) or (secondLabel in smoking):
                     detect = yolo_detect(frames,label,netsmoking)
                     print("detect is :",detect)            
                     if detect == 2:
