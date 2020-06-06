@@ -31,6 +31,7 @@ def cancel():
 
 @eel.expose
 def startLabel(movie_lang,gpu_support,display_frame):
+    
     global video_path
     if video_path != '':
         eel.mSpinner()
@@ -105,6 +106,14 @@ def startLabel(movie_lang,gpu_support,display_frame):
                 writer = cv.VideoWriter(args["output"], fourcc, fps, (frame.shape[1], frame.shape[0]), True)
             writer.write(frame)
             
+        def elseFrame(frames,display_frame):
+            for frame in frames:
+                if display_frame:
+                    cv.imshow("Statutory Labeling", frame)
+                    key = cv.waitKey(1) & 0xFF
+                writeFrame(frame,fps)   
+                
+                
         # grab a pointer to the input video stream
         print("[INFO] accessing video stream...")
         vid = cv.VideoCapture(video_path)
@@ -163,11 +172,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)
                     else:
-                        for frame in frames:
-                            if display_frame:
-                                cv.imshow("Statutory Labeling", frame)
-                                key = cv.waitKey(1) & 0xFF
-                            writeFrame(frame,fps)        
+                        elseFrame(frames,display_frame)      
                 elif (firstLabel in smoking) or (secondLabel in smoking):
                     detect = yolo_detect(frames,label,netsmoking)
                     print("detect is :",detect)            
@@ -185,11 +190,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 key = cv.waitKey(1) & 0xFF
                             writeFrame(frame,fps)
                     else:
-                        for frame in frames:
-                            if display_frame:
-                                cv.imshow("Statutory Labeling", frame)
-                                key = cv.waitKey(1) & 0xFF
-                            writeFrame(frame,fps)
+                        elseFrame(frames,display_frame)
                 elif label in alcohol:
                     detect = yolo_detect(frames,label,netsmoking)
                     for i in range(0,84):
@@ -229,23 +230,30 @@ def startLabel(movie_lang,gpu_support,display_frame):
                                 key = cv.waitKey(1) & 0xFF    
                             writeFrame(frame,fps)
                     else:
-                        for frame in frames:
-                            if display_frame:
-                                cv.imshow("Statutory Labeling", frame)
-                                key = cv.waitKey(1) & 0xFF
-                            writeFrame(frame,fps)                         
+                        elseFrame(frames,display_frame)                        
                 else:
+                    elseFrame(frames,display_frame)
+                    
+            elif (firstLabel not in smoking) and (secondLabel not in smoking):
+                detect = yolo_detect(frames,label,netsmoking)
+                print("detect is :",detect)            
+                if detect == 2:
+                    eel.info("Smoking detected")
+                    for i in range(0,84):
+                        (grabbed, frame) = vid.read()
+                        if not grabbed:
+                            break
+                    frames.append(frame)
                     for frame in frames:
+                        frame = add_warning(frame,'Images/statutory/'+movie_lang+'/smoke.png')
                         if display_frame:
                             cv.imshow("Statutory Labeling", frame)
                             key = cv.waitKey(1) & 0xFF
-                        writeFrame(frame,fps)                   
+                        writeFrame(frame,fps)
+                else:
+                    elseFrame(frames,display_frame)                              
             else:
-                for frame in frames:
-                    if display_frame:
-                        cv.imshow("Statutory Labeling", frame)
-                        key = cv.waitKey(1) & 0xFF
-                    writeFrame(frame,fps)
+                elseFrame(frames,display_frame)
         
         eel.mSpinner()
         if video_path != '':
