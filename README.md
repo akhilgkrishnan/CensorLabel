@@ -1,6 +1,6 @@
 
 # CensorLabel
-[![HitCount](http://hits.dwyl.com/AkhilGKrishnan/CensorLabel.svg)](http://hits.dwyl.com/AkhilGKrishnan/CensorLabel)<br>
+[![HitCount](http://hits.dwyl.com/AkhilGKrishnan/CensorLabel.svg)](http://hits.dwyl.com/AkhilGKrishnan/CensorLabel)  [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 Automated censorable content identification system for movie using deeplearning. This project automatically add statutory warnings in movies when any censorable contents where shown in the movies.
 The Project is developed using YOLOV3 and OpenCV...
 
