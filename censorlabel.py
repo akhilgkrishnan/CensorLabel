@@ -16,7 +16,7 @@ eel.init('web')
 writer = None
 video_path = ''
 @eel.expose
-def btn_ResimyoluClick():
+def select_file():
     root = Tk()
     root.withdraw()
     root.wm_attributes('-topmost', 1)
@@ -33,12 +33,13 @@ def cancel():
 def startLabel(movie_lang,gpu_support,display_frame):
     
     global video_path
-    if video_path != '':
-        eel.mSpinner()
-        eel.info("Movie statutory labeling started")
-    else:
-        eel.info("select video path")     
+     
     try:
+        if video_path != '':
+            eel.mSpinner()
+            eel.info("Movie statutory labeling started")
+        else:
+            eel.info("select video path")    
         
         os.system('ffmpeg -i '+video_path+' -ab 160k -ac 2 -ar 44100 -vn Audio/'+Path(video_path).stem+'-audio.wav')
         print(video_path,movie_lang,gpu_support,display_frame)

@@ -9,7 +9,7 @@ function start(){
 
 }
 
-}
+
 
 eel.expose(info);
 function info(x) {

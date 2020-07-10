@@ -33,6 +33,8 @@
             });
             $("#cancel").click(function(){
                 eel.cancel();
+                var window = remote.getCurrentWindow();
+                window.close();
 
             });
 
@@ -40,7 +42,7 @@
        
 
         async function getFolder() {
-                var filename = await eel.btn_ResimyoluClick()();
+                var filename = await eel.select_file();
                     if (filename) {
                         document.getElementById("video-input").innerHTML = filename;
                     }
