@@ -41,7 +41,7 @@
        
 
         async function getFolder() {
-                var filename = await eel.select_file();
+                var filename = await eel.btn_ResimyoluClick();
                     if (filename) {
                         document.getElementById("video-input").innerHTML = filename;
                     }

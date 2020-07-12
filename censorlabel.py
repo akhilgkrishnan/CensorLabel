@@ -16,7 +16,7 @@ eel.init('web')
 writer = None
 video_path = ''
 @eel.expose
-def select_file():
+def btn_ResimyoluClick():
     root = Tk()
     root.withdraw()
     root.wm_attributes('-topmost', 1)
