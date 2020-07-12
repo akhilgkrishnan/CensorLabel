@@ -33,7 +33,6 @@
             });
             $("#cancel").click(function(){
                 eel.cancel();
-                
 
             });
 
@@ -41,7 +40,7 @@
        
 
         async function getFolder() {
-                var filename = await eel.btn_ResimyoluClick();
+                var filename = await eel.btn_ResimyoluClick()();
                     if (filename) {
                         document.getElementById("video-input").innerHTML = filename;
                     }
