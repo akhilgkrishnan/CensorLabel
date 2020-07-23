@@ -271,7 +271,8 @@ def startLabel(movie_lang,gpu_support,display_frame):
         os.system('ffmpeg -i output.avi -i Audio/'+Path(video_path).stem+'-audio.wav -c copy Video/'+Path(video_path).stem+'-Ouput.mkv')
         print('Output file is saved to: Video/'+Path(video_path).stem+'-Ouput.mkv')
         print("Process finished")
-        #os.system('rm Audio/'+Path(video_path).stem+'-audio.wav')
+        if(os.path.isfile('Audio/'+Path(video_path).stem+'-audio.wav')):
+            os.system('rm Audio/'+Path(video_path).stem+'-audio.wav')
     except:
         print("An error occured")
         eel.mSpinner()
