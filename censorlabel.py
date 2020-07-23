@@ -71,7 +71,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
         neth = cv.dnn.readNet(args["model"])
         # Load the weights and configutation to form the pretrained YOLOv3 model for smoking detection
         nethelmet = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-helmet.cfg', './yolov3-coco/helmet6000.weights')
-        netsmoking = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-smoking.cfg', './yolov3-coco/yolosmoking.weights')
+        netsmoking = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-smoking.cfg', './yolov3-coco/yolov3hs.weights')
         netseatbelt = cv.dnn.readNetFromDarknet('./yolov3-coco/yolov3-custom1.cfg', './yolov3-coco/yoloseatbelt.weights')
 
         if gpu_support:
@@ -271,7 +271,7 @@ def startLabel(movie_lang,gpu_support,display_frame):
         os.system('ffmpeg -i output.avi -i Audio/'+Path(video_path).stem+'-audio.wav -c copy Video/'+Path(video_path).stem+'-Ouput.mkv')
         print('Output file is saved to: Video/'+Path(video_path).stem+'-Ouput.mkv')
         print("Process finished")
-        os.system('rm Audio/'+Path(video_path).stem+'-audio.wav')
+        #os.system('rm Audio/'+Path(video_path).stem+'-audio.wav')
     except:
         print("An error occured")
         eel.mSpinner()

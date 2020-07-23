@@ -67,7 +67,7 @@ def detectChecking(img, boxes, confidences, classids, idxs, colors, labels,heigh
                 return detect 
         #Smoking detection                  
         elif labelh in smoking or alcohol:
-            smoke = list(filter(lambda x: classids[x] == 3,idxs.flatten()))
+            smoke = list(filter(lambda x: classids[x] == 0,idxs.flatten()))
             print(smoke)
             # for i in idxs.flatten():     
             #     x, y = boxes[i][0], boxes[i][1]
