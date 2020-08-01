@@ -17,7 +17,7 @@ This system is used for smoking detection, Check whether the motorcyclist weared
 
 `pip install -r requirements.txt`
 
-
+## Result
 ![result](DeepinScreenshot_20200801233307.png)
 
 ## Support
