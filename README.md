@@ -6,9 +6,19 @@ The Project is developed using YOLOV3 and OpenCV...
 
 This system is used for smoking detection, Check whether the motorcyclist weared helmet or not, driving without wearing seatbelt and alcohol detection.
 
+## Requirements
+
+* Python 3
+* Opencv
+* FFMpeg
+
+
 ## Installation
 
 `pip install -r requirements.txt`
+
+
+![result](DeepinScreenshot_20200801233307.png)
 
 ## Support
 
