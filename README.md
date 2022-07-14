@@ -11,6 +11,8 @@ This system is used for smoking detection, Check whether the motorcyclist weared
 * Python 3
 * Opencv
 * FFMpeg
+* Tkinter
+* Python EEL
 
 
 ## Installation
