@@ -1,3 +1,0 @@
-imutils
-eel
-opencv-python

@@ -138,3 +138,10 @@ dmypy.json
 .pyre/
 
 ./human-activity/resnet-34_kinetics.onnx
+
+# Labelled output videos
+*-labeled.mp4
+.*.video-only.mp4
+
+# Downloaded models and cached prompt embeddings
+models/
