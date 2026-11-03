@@ -23,6 +23,7 @@ from censorlabel.config import Settings
 from censorlabel.domain import Segment, WarningKind
 from censorlabel.events import Event, Log, Preview, Progress
 from censorlabel.pipeline import Analysis, CancelToken, LabelingPipeline, default_output_path
+from censorlabel.ui.file_picker import LocalFilePicker
 
 VIDEO_TYPES = ("Video files (*.mp4;*.mkv;*.avi;*.mov;*.webm)", "All files (*.*)")
 MODELS = {
@@ -138,15 +139,43 @@ def build_page() -> None:
             ui.label("Input").classes("text-base font-semibold")
 
             async def browse() -> None:
-                files = await app.native.main_window.create_file_dialog(file_types=VIDEO_TYPES)
-                if files:
-                    video.value = files[0]
+                current = Path(video.value).expanduser() if video.value else None
+                start = current.parent if current and current.parent.is_dir() else None
+                if native:
+                    files = await app.native.main_window.create_file_dialog(
+                        file_types=VIDEO_TYPES, directory=str(start or "")
+                    )
+                    chosen = files[0] if files else None
+                else:
+                    chosen = await LocalFilePicker(start)
+                if chosen:
+                    video.value = chosen
 
             with ui.input("Video file", placeholder="/path/to/movie.mp4").classes("w-full") as video:
+                with video.add_slot("append"):
+                    ui.button(icon="folder_open", on_click=browse).props("flat round dense").tooltip("Browse…")
+            async def save_as() -> None:
+                current = Path(output.value).expanduser() if output.value else None
+                if current is None and video.value:
+                    current = default_output_path(Path(video.value).expanduser())
+                folder = current.parent if current and current.parent.is_dir() else None
+                name = current.name if current else "labeled.mp4"
                 if native:
-                    with video.add_slot("append"):
-                        ui.button(icon="folder_open", on_click=browse).props("flat round dense").tooltip("Browse…")
-            output = ui.input("Output file").classes("w-full")
+                    import webview
+
+                    save = webview.FileDialog.SAVE if hasattr(webview, "FileDialog") else webview.SAVE_DIALOG
+                    result = await app.native.main_window.create_file_dialog(
+                        dialog_type=save, directory=str(folder or ""), save_filename=name
+                    )
+                    chosen = (result[0] if isinstance(result, (list, tuple)) else result) if result else None
+                else:
+                    chosen = await LocalFilePicker(folder, save_name=name)
+                if chosen:
+                    output.value = chosen
+
+            with ui.input("Output file").classes("w-full") as output:
+                with output.add_slot("append"):
+                    ui.button(icon="save_as", on_click=save_as).props("flat round dense").tooltip("Save as…")
             video.on_value_change(lambda e: output.set_value(str(default_output_path(Path(e.value)))) if e.value else None)
 
             language = ui.select(languages, value="English" if "English" in languages else None, label="Warning language").classes("w-full")
@@ -184,8 +213,10 @@ def build_page() -> None:
                 with ui.column().classes("w-full p-4 gap-2"):
                     status = ui.label("Choose a video, then Analyze").classes("text-sm opacity-80")
                     progress = ui.linear_progress(value=0, show_value=False).props("rounded size=8px")
-                    reveal_btn = ui.button("Show in folder", icon="folder", on_click=lambda: output_file and _reveal(output_file)).props("flat dense")
-                    reveal_btn.set_visibility(False)
+                    with ui.row().classes("gap-2") as done_actions:
+                        ui.button("Download", icon="download", on_click=lambda: output_file and ui.download.file(output_file)).props("flat dense")
+                        ui.button("Show in folder", icon="folder", on_click=lambda: output_file and _reveal(output_file)).props("flat dense")
+                    done_actions.set_visibility(False)
 
             with ui.card().classes("w-full"):
                 with ui.row().classes("w-full items-center justify-between"):
@@ -319,7 +350,7 @@ def build_page() -> None:
             return
         settings = current_settings()
         log.clear()
-        reveal_btn.set_visibility(False)
+        done_actions.set_visibility(False)
         analysis = None
         show_segments()
         status.set_text("Loading model… (first run downloads it)")
@@ -352,7 +383,7 @@ def build_page() -> None:
             output_file = dst
             progress.set_value(1)
             status.set_text(f"Saved {dst}")
-            reveal_btn.set_visibility(True)
+            done_actions.set_visibility(True)
             ui.notify("Video rendered", type="positive")
         elif ok is False:
             status.set_text("Cancelled")
