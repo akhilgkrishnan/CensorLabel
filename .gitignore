@@ -143,5 +143,3 @@ dmypy.json
 *-labeled.mp4
 .*.video-only.mp4
 
-# Downloaded models and cached prompt embeddings
-models/

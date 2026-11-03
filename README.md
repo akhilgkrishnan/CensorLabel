@@ -59,17 +59,32 @@ don't need the model.
 ## Requirements
 
 * Python 3.12+ and [uv](https://docs.astral.sh/uv/)
-* Nothing else: the model downloads on first run into `models/`, and an ffmpeg binary comes with
-  `imageio-ffmpeg` if ffmpeg isn't installed.
+* [Git LFS](https://git-lfs.com/) to fetch the models with the repo (`brew install git-lfs`, then `git lfs install`)
+* ffmpeg is optional: a binary comes with `imageio-ffmpeg` if ffmpeg isn't installed.
 
 Set `CENSORLABEL_HOME` to use a different directory for `models/` and `Images/statutory/`.
+
+## Models
+
+The models are stored in this repo with Git LFS under [`models/`](models/). If you cloned without
+LFS, run `git lfs pull`. If the files are missing, the app downloads them from Ultralytics on first run.
+
+| File | Size | Purpose | Source URL |
+|---|---|---|---|
+| `models/yoloe-26s-seg.pt` | 30 MB | YOLOE-26 small: the open-vocabulary detector | https://github.com/ultralytics/assets/releases/download/v8.4.0/yoloe-26s-seg.pt |
+| `models/mobileclip2_b.ts` | 242 MB | MobileCLIP2 text encoder; turns the detection prompts into embeddings (only needed when the prompts change) | https://github.com/ultralytics/assets/releases/download/v8.4.0/mobileclip2_b.ts |
+| `models/yoloe-26s-seg-031fd26c.prompts.pt` | 32 KB | Cached embeddings for the prompts in `config.py`, so the text encoder isn't loaded at runtime | generated |
+
+Model docs: [YOLOE](https://docs.ultralytics.com/models/yoloe/) ·
+[Ultralytics assets](https://github.com/ultralytics/assets/releases/tag/v8.4.0).
+The models are AGPL-3.0, like the Ultralytics library.
 
 ## Usage
 
 ```bash
 uv sync --extra native             # pywebview gives a native window; omit for browser mode
 uv run censorlabel-gui             # desktop app
-uv run censorlabel-gui --browser   # same UI in the browser
+uv run censorlabel-gui --browser   # same UI in the browser at http://localhost:8080
 
 uv run censorlabel movie.mp4 -o movie-labeled.mp4
 uv run censorlabel movie.mp4 --analyze-only          # print the warning timeline as JSON
